@@ -1,0 +1,1197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FootyRush Kit Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pitch:#0E6B3A;--turf:#1F8F4E;--chalk:#FFFFFF;--paper:#F2F6F1;--ink:#10241A;
+  --muted:#5B6E62;--line:#D3E2D7;--flag:#F2C230;--miss:#C8463C;--draw:#9DB8A6;
+  --display:'Bebas Neue',Impact,'Arial Narrow',sans-serif;--body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:var(--body);color:var(--chalk);background-color:var(--pitch);
+  background-image:repeating-linear-gradient(90deg,var(--pitch) 0 120px,#0C6134 120px 240px);-webkit-font-smoothing:antialiased}
+button,select{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:3px solid var(--flag);outline-offset:2px;border-radius:6px}
+
+/* page */
+.stage{max-width:1180px;margin:0 auto;padding:48px 24px 64px;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:56px;align-items:start}
+.notes{max-width:560px;padding-top:12px}
+.brand{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.brand svg{width:52px;height:52px;flex:none}
+.brand h1{font-family:var(--display);font-size:56px;line-height:.9;font-weight:400;letter-spacing:.5px}
+.brand p{font-size:14px;opacity:.8;margin-top:4px}
+.lede{font-size:19px;line-height:1.5;margin-bottom:28px;max-width:52ch}
+.notes h2.group{font-family:var(--display);font-weight:400;font-size:30px;margin:30px 0 4px;letter-spacing:.3px}
+.change{padding:16px 0;border-top:2px solid rgba(255,255,255,.22)}
+.change h3{font-size:16px;font-weight:700;margin-bottom:6px}
+.change p{font-size:15px;line-height:1.55;opacity:.86;max-width:60ch}
+.change.cut h3{text-decoration:line-through;text-decoration-color:var(--flag);text-decoration-thickness:2px}
+.money{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;padding:14px 0;border-top:2px solid rgba(255,255,255,.22)}
+.money b{font-family:var(--display);font-weight:400;font-size:26px;line-height:1;color:var(--flag);min-width:78px}
+.money h3{font-size:15px;font-weight:700}
+.money p{grid-column:2;font-size:14.5px;line-height:1.5;opacity:.86}
+.sample{display:inline-block;margin-top:24px;font-size:13px;background:rgba(0,0,0,.22);padding:8px 12px;border-radius:8px;line-height:1.45}
+
+/* phone */
+.phone{position:sticky;top:32px;width:390px;height:812px;background:var(--ink);border-radius:52px;padding:12px;box-shadow:0 30px 60px rgba(5,30,15,.45)}
+.screen{position:relative;height:100%;border-radius:42px;overflow:hidden;background:var(--paper);color:var(--ink);display:flex;flex-direction:column}
+.status{height:44px;flex:none;display:flex;justify-content:space-between;align-items:center;padding:0 28px;font-size:14px;font-weight:600;position:relative;z-index:6;background:var(--paper)}
+.notch{width:110px;height:30px;background:var(--ink);border-radius:20px}
+.view{flex:1;overflow-y:auto;padding:4px 18px 24px;scrollbar-width:none}
+.view::-webkit-scrollbar,.d-body::-webkit-scrollbar{display:none}
+.panel{display:none}.panel.on{display:block}
+
+.top{display:flex;justify-content:space-between;align-items:flex-end;margin:6px 0 14px;gap:10px}
+.top h3{font-family:var(--display);font-size:40px;line-height:.9;font-weight:400;letter-spacing:.3px}
+.top small{display:block;font-size:13px;color:var(--muted);margin-top:4px}
+.pill{flex:none;font-size:12px;font-weight:600;padding:6px 10px;border-radius:999px;background:var(--chalk);border:1px solid var(--line)}
+.pill.flag{background:var(--flag);border-color:var(--flag)}
+
+.chips{display:flex;gap:8px;overflow-x:auto;margin:0 -18px 12px;padding:0 18px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;font-size:13px;font-weight:600;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--chalk)}
+.chip[aria-pressed="true"]{background:var(--pitch);color:var(--chalk);border-color:var(--pitch)}
+
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:#E2ECE5;border-radius:12px;padding:3px;margin-bottom:14px}
+.seg button{font-size:13px;font-weight:600;padding:8px 6px;border-radius:9px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--chalk);color:var(--ink);box-shadow:0 1px 2px rgba(16,36,26,.15)}
+.seg .lk{font-size:10px;font-weight:700;background:var(--flag);color:var(--ink);padding:1px 5px;border-radius:4px;margin-left:4px;vertical-align:1px}
+
+.slip{display:flex;align-items:center;justify-content:space-between;background:var(--ink);color:var(--chalk);border-radius:16px;padding:14px 16px;margin-bottom:14px}
+.slip b{font-family:var(--display);font-size:30px;font-weight:400;line-height:1}
+.slip span{display:block;font-size:13px;opacity:.8;margin-top:2px}
+.slip button{background:var(--flag);color:var(--ink);font-weight:700;font-size:13px;padding:10px 14px;border-radius:10px}
+
+/* fixture cards */
+.fx{background:var(--chalk);border-radius:18px;padding:14px 14px 12px;margin-bottom:12px;border:1px solid var(--line)}
+.fx-head{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:10px;gap:8px}
+.edge{color:var(--ink);background:var(--flag);font-weight:700;padding:2px 8px;border-radius:6px}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;width:100%;text-align:left}
+.team{font-weight:700;font-size:15px}
+.team.away{text-align:right}
+.score{font-family:var(--display);font-size:34px;line-height:1;text-align:center;min-width:72px}
+.score small{display:block;font-family:var(--body);font-size:10px;color:var(--muted);margin-top:2px}
+.strip{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:12px 0 6px;gap:2px}
+.strip i{display:block;height:100%}
+.strip .h{background:repeating-linear-gradient(90deg,var(--pitch) 0 10px,var(--turf) 10px 20px)}
+.strip .d{background:repeating-linear-gradient(90deg,var(--draw) 0 10px,#B3C9BA 10px 20px)}
+.strip .a{background:repeating-linear-gradient(90deg,var(--ink) 0 10px,#2A3F33 10px 20px)}
+.pcts{display:flex;justify-content:space-between;font-family:var(--display);font-size:20px;line-height:1}
+.pcts span:nth-child(2){color:var(--muted)}
+.pcts em{font-family:var(--body);font-style:normal;font-size:11px;color:var(--muted);margin-left:3px}
+.fx-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.why-btn,.open-btn{font-size:13px;font-weight:600;color:var(--pitch);display:flex;align-items:center;gap:6px;padding:4px 0}
+.open-btn{color:var(--ink);background:#E8F0EA;padding:6px 10px;border-radius:8px}
+.why-btn svg{transition:transform .2s}
+.why-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.why{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease}
+.why.open{grid-template-rows:1fr}
+.why>div{overflow:hidden}
+.why ul{list-style:none;padding-top:10px;border-top:1px dashed var(--line);margin-top:10px}
+.why li{font-size:13px;line-height:1.45;padding:4px 0 4px 18px;position:relative}
+.why li::before{content:"";position:absolute;left:2px;top:10px;width:8px;height:8px;border-radius:50%;background:var(--turf)}
+.verdict{font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:6px}
+.v-exact{background:var(--flag)}.v-hit{background:#E2F1E6;color:var(--pitch)}.v-miss{background:#F6E3E1;color:var(--miss)}
+.motm{font-size:12.5px;color:var(--muted)}
+.motm b{color:var(--ink)}
+.adslot{border:1.5px dashed #B9CDBF;border-radius:16px;padding:14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12.5px;color:var(--muted);background:repeating-linear-gradient(135deg,transparent 0 10px,rgba(185,205,191,.18) 10px 20px)}
+.adslot b{display:block;color:var(--ink);font-size:13px}
+.adslot button{flex:none;font-weight:700;font-size:12px;color:var(--pitch)}
+
+/* match centre */
+.detail{position:absolute;inset:44px 0 0 0;background:var(--paper);z-index:5;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .28s ease;visibility:hidden}
+.detail.open{transform:none;visibility:visible}
+.d-bar{display:flex;justify-content:space-between;align-items:center;padding:4px 14px 8px}
+.d-bar button{display:flex;align-items:center;gap:4px;font-weight:600;font-size:14px;color:var(--pitch);padding:6px 4px}
+.d-bar span{font-size:12.5px;color:var(--muted);font-weight:600}
+.d-body{flex:1;overflow-y:auto;padding:0 18px 28px;scrollbar-width:none}
+.board{background:var(--pitch);color:var(--chalk);border-radius:22px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
+.board::after{content:"";position:absolute;left:50%;top:-50px;width:150px;height:150px;border:2px solid rgba(255,255,255,.16);border-radius:50%;transform:translateX(-50%)}
+.board .teams{position:relative;z-index:1}
+.board .team{font-size:16px}
+.board .score{font-size:64px;min-width:110px}
+.board .score small{color:rgba(255,255,255,.75)}
+.scorers{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;font-size:12px;opacity:.9;line-height:1.6}
+.scorers div:last-child{text-align:right}
+.srow{margin:14px 0}
+.srow .lbl{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+.srow .lbl b{font-family:var(--display);font-weight:400;font-size:20px;line-height:1}
+.srow .lbl span{color:var(--muted);font-weight:500}
+.srow .lbl b.w{color:var(--pitch)}
+.twin{display:grid;grid-template-columns:1fr 1fr;gap:4px;height:8px}
+.twin i{display:block;height:100%;border-radius:4px;background:#DCE7DF;position:relative;overflow:hidden}
+.twin i::after{content:"";position:absolute;top:0;bottom:0;width:var(--w);background:var(--c,var(--draw));border-radius:4px}
+.twin i:first-child::after{right:0}.twin i:last-child::after{left:0}
+.card{background:var(--chalk);border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:12px}
+.card h4{font-size:14px;font-weight:700;margin-bottom:6px;display:flex;justify-content:space-between;align-items:baseline}
+.card h4 span{font-size:12px;font-weight:500;color:var(--muted)}
+.rlist li{list-style:none;display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.rlist li:first-child{border-top:0}
+.rlist .cd{width:10px;height:10px;border-radius:50%}
+.rlist small{color:var(--muted);font-size:11.5px;margin-left:4px}
+.rt{font-family:var(--display);font-size:19px;line-height:1;padding:4px 7px 2px;border-radius:7px;background:#EEF3EF;min-width:40px;text-align:center}
+.rt.r8{background:var(--flag)}.rt.r7{background:#D6EDDC}.rt.r6{background:#F6E3E1}
+.tagm{font-size:10px;font-weight:700;background:var(--ink);color:var(--chalk);padding:2px 5px;border-radius:4px;margin-left:6px;vertical-align:1px}
+.form{display:flex;gap:4px}
+.form i{font-style:normal;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff}
+.fW{background:var(--turf)}.fD{background:var(--draw)}.fL{background:var(--miss)}
+.formrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:14px;font-weight:600}
+.btnrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.ghost{border:1.5px solid var(--line);background:var(--chalk);font-weight:700;font-size:14px;padding:13px;border-radius:14px}
+
+/* pitch + corner markers */
+.pitch{position:relative;aspect-ratio:68/118;border-radius:16px;overflow:hidden;background:repeating-linear-gradient(180deg,#167A43 0 10%,#12703C 10% 20%)}
+.pitch.half{aspect-ratio:68/78}
+.pitch svg.lines{position:absolute;inset:0;width:100%;height:100%}
+.mk{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;width:66px}
+.mk .sh{position:relative;width:28px;height:28px;border-radius:9px;background:var(--c);color:var(--t);font-size:10.5px;font-weight:700;display:grid;place-items:center;border:2px solid rgba(255,255,255,.9)}
+.mk .bd{position:absolute;top:-9px;right:-17px;font-family:var(--display);font-size:14px;line-height:1;padding:2px 4px 1px;border-radius:5px;background:var(--chalk);color:var(--ink)}
+.mk .bd.r8{background:var(--flag)}
+.mk .tg{position:absolute;bottom:-7px;left:-14px;white-space:nowrap;line-height:1.3;font-size:9px;font-weight:700;padding:1px 4px;border-radius:4px;background:var(--ink);color:var(--chalk)}
+.mk .tg.tgy{background:var(--flag);color:var(--ink)}
+.mk .nm{margin-top:4px;font-size:10px;font-weight:600;color:#fff;background:rgba(5,25,14,.5);padding:1px 5px;border-radius:4px;max-width:66px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pitch-key{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:8px}
+
+/* predict */
+.pred-card{background:var(--pitch);color:var(--chalk);border-radius:22px;padding:18px;position:relative;overflow:hidden}
+.pred-card::after{content:"";position:absolute;left:50%;top:-40px;width:150px;height:150px;border:2px solid rgba(255,255,255,.16);border-radius:50%;transform:translateX(-50%)}
+.pred-card .fx-head{color:rgba(255,255,255,.75);position:relative;z-index:1}
+.pred-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin:14px 0 8px}
+.side{text-align:center}
+.side .nm{font-weight:700;font-size:15px;margin-bottom:8px}
+.goals{font-family:var(--display);font-size:84px;line-height:.85}
+.step{display:flex;justify-content:center;gap:10px;margin-top:8px}
+.step button{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.14);font-size:22px;font-weight:600;line-height:1}
+.dash{font-family:var(--display);font-size:48px;opacity:.5}
+.vs-model{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.2);border-radius:12px;padding:10px 12px;font-size:13px;margin-top:8px}
+.vs-model b{font-family:var(--display);font-size:24px;font-weight:400;color:var(--flag)}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.rule{background:var(--chalk);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.rule b{display:block;font-family:var(--display);font-size:28px;font-weight:400;line-height:1;color:var(--pitch)}
+.rule.bonus{background:#FCF3D2;border-color:#F0DC94}
+.rule.bonus b{color:var(--ink)}
+.rule span{font-size:11.5px;color:var(--muted);line-height:1.3;display:block;margin-top:4px}
+.primary{width:100%;background:var(--ink);color:var(--chalk);font-weight:700;font-size:15px;padding:15px;border-radius:14px}
+.primary.done{background:var(--turf)}
+.pager{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:13px;color:var(--muted)}
+.pager button{font-weight:600;color:var(--pitch);padding:6px 4px}
+.pager button:disabled{opacity:.35;cursor:default}
+
+/* leagues */
+.invite{display:flex;gap:10px;align-items:center;background:var(--chalk);border:1px dashed var(--turf);border-radius:16px;padding:12px 14px;margin-bottom:14px}
+.invite div{flex:1;font-size:13px;color:var(--muted)}
+.invite code{display:block;font-family:var(--display);font-size:26px;color:var(--ink);letter-spacing:1px}
+.invite button{background:var(--pitch);color:var(--chalk);font-weight:700;font-size:13px;padding:10px 14px;border-radius:10px}
+table{width:100%;border-collapse:collapse;background:var(--chalk);border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+th{font-size:11.5px;font-weight:600;color:var(--muted);text-align:left;padding:10px 10px 6px}
+td{font-size:14px;padding:11px 10px;border-top:1px solid var(--line)}
+td.n{font-family:var(--display);font-size:20px;text-align:right}
+th.r{text-align:right}
+.pos{font-family:var(--display);font-size:20px;width:30px}
+.mv{font-size:11px;font-weight:700;margin-left:6px}
+.up{color:var(--turf)}.dn{color:var(--miss)}
+tr.me td{background:#E8F3EB;font-weight:700}
+tr.model td{background:#FCF3D2}
+.tag{font-size:10.5px;font-weight:700;background:var(--flag);color:var(--ink);padding:2px 6px;border-radius:5px;margin-left:6px;vertical-align:2px}
+.caption{font-size:13px;color:var(--muted);line-height:1.45;margin:10px 2px 0}
+.sec{font-size:15px;font-weight:700;margin:18px 0 10px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sec span{font-size:12px;font-weight:500;color:var(--muted);text-align:right}
+.passcard{margin-top:16px;border-radius:20px;padding:16px;background:var(--ink);color:var(--chalk)}
+.passcard h4{font-family:var(--display);font-weight:400;font-size:30px;line-height:.95}
+.passcard h4 span{color:var(--flag)}
+.passcard p{font-size:13px;opacity:.85;margin:6px 0 10px;line-height:1.45}
+
+/* fantasy */
+.fhead{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.fhead div{background:var(--chalk);border:1px solid var(--line);border-radius:14px;padding:10px}
+.fhead b{display:block;font-family:var(--display);font-size:26px;font-weight:400;line-height:1}
+.fhead span{font-size:11.5px;color:var(--muted)}
+.rulebar{font-size:12.5px;line-height:1.45;background:#E8F3EB;border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.pickrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
+.pickrow label{font-size:11.5px;color:var(--muted);font-weight:600;display:block;margin-bottom:4px}
+.pickrow select{width:100%;background:var(--chalk);border:1.5px solid var(--line);border-radius:12px;padding:10px;font-size:13.5px;font-weight:700;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235B6E62' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.pickrow .a select{border-color:var(--pitch)}
+.pickrow .b select{border-color:var(--ink)}
+.bfly{background:var(--chalk);border:1px solid var(--line);border-radius:18px;padding:6px 14px 10px}
+.bf{padding:9px 0;border-top:1px solid var(--line)}
+.bf:first-child{border-top:0}
+.bf .l{display:grid;grid-template-columns:52px 1fr 52px;align-items:baseline;font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:5px}
+.bf .l b{font-family:var(--display);font-size:20px;font-weight:400;color:var(--ink)}
+.bf .l b:first-child{text-align:left}.bf .l b:last-child{text-align:right}
+.bf .l b.w{color:var(--pitch)}
+.bf .twin i.wa::after{--c:var(--pitch)}
+.bf .twin i.wb::after{--c:var(--ink)}
+.lockwrap{position:relative;margin-top:-1px}
+.lockwrap .bfly{filter:blur(3.5px);opacity:.55;pointer-events:none;border-top-left-radius:0;border-top-right-radius:0}
+.lockover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:16px;background:rgba(252,243,210,.72);border-radius:18px}
+.lockover p{font-size:13.5px;font-weight:600;max-width:28ch;line-height:1.4}
+.btn-flag{background:var(--flag);color:var(--ink);font-weight:700;font-size:13px;padding:10px 16px;border-radius:10px}
+.cap{display:grid;grid-template-columns:110px 1fr 40px;align-items:center;gap:10px;padding:8px 0}
+.cap .who{font-size:14px;font-weight:600;line-height:1.2}
+.cap .who small{display:block;font-weight:400;color:var(--muted);font-size:11.5px}
+.bar{height:12px;border-radius:6px;background:#E2ECE5;overflow:hidden}
+.bar i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--pitch) 0 10px,var(--turf) 10px 20px);border-radius:6px}
+.cap.top1 .bar i{background:repeating-linear-gradient(90deg,#D9AA1E 0 10px,var(--flag) 10px 20px)}
+.cap b{font-family:var(--display);font-size:22px;font-weight:400;text-align:right}
+.locked{position:relative;margin-top:14px;border-radius:18px;overflow:hidden;border:1px solid #F0DC94}
+.locked .blur{filter:blur(3px);opacity:.6;padding:14px;background:var(--chalk);pointer-events:none}
+.locked .lockover{border-radius:0}
+
+/* preview */
+.h2hsum{display:grid;grid-template-columns:1fr 1fr 1fr;text-align:center;margin:6px 0 8px}
+.h2hsum b{display:block;font-family:var(--display);font-size:34px;font-weight:400;line-height:1}
+.h2hsum span{font-size:11.5px;color:var(--muted)}
+.h2hlist li{list-style:none;display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-top:1px solid var(--line)}
+.h2hlist li span:first-child{color:var(--muted)}
+.watch{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.watch div{border-radius:12px;padding:10px;background:#F2F6F1;border-left:4px solid var(--c)}
+.watch b{display:block;font-size:14px}
+.watch span{font-size:12px;color:var(--muted);line-height:1.35;display:block;margin-top:3px}
+.news li{list-style:none;font-size:13.5px;padding:7px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between}
+.news li:first-child{border-top:0}
+.news em{font-style:normal;font-weight:600}
+
+/* draft */
+.dclock{background:var(--ink);color:var(--chalk);border-radius:20px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dclock small{display:block;font-size:12px;opacity:.75}
+.dclock b{display:block;font-family:var(--display);font-weight:400;font-size:28px;line-height:1;margin-top:3px}
+.dclock .tm{font-family:var(--display);font-size:46px;line-height:1;color:var(--flag);text-align:right}
+.dclock .tm.wait{color:rgba(255,255,255,.5);font-size:22px}
+.recent{display:flex;gap:8px;overflow-x:auto;margin:0 -18px;padding:2px 18px 4px;scrollbar-width:none}
+.recent::-webkit-scrollbar{display:none}
+.recent div{flex:none;width:118px;background:var(--chalk);border:1px solid var(--line);border-radius:14px;padding:9px 10px}
+.recent small{display:block;font-size:11px;color:var(--muted)}
+.recent b{display:block;font-size:13px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recent div.mine{border-color:var(--turf);background:#E8F3EB}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.slots div{background:var(--chalk);border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center}
+.slots b{display:block;font-family:var(--display);font-size:22px;font-weight:400;line-height:1}
+.slots span{font-size:11px;color:var(--muted)}
+.slots div.full{background:#E8F3EB;border-color:#B9DCC3}
+.avail li{list-style:none;display:grid;grid-template-columns:26px 1fr auto auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.avail li:first-child{border-top:0}
+.avail .rk{font-family:var(--display);font-size:18px;color:var(--muted)}
+.avail .pn{font-size:14px;font-weight:600;line-height:1.2}
+.avail .pn small{display:block;font-weight:400;font-size:11.5px;color:var(--muted)}
+.avail .pj{font-family:var(--display);font-size:20px;text-align:right;line-height:1}
+.avail .pj small{display:block;font-family:var(--body);font-size:10px;color:var(--muted)}
+.avail button{background:var(--pitch);color:var(--chalk);font-weight:700;font-size:12.5px;padding:8px 12px;border-radius:9px}
+.avail button:disabled{background:#DCE7DF;color:var(--muted);cursor:default}
+.ptag{font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;background:#E2ECE5;color:var(--ink);margin-left:5px;vertical-align:1px}
+
+/* record */
+.hero-stat{background:var(--ink);color:var(--chalk);border-radius:22px;padding:18px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.hero-stat .big{font-family:var(--display);font-size:88px;line-height:.8;color:var(--flag)}
+.hero-stat p{font-size:14px;line-height:1.45;opacity:.9}
+.lgrates{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+.lgrates div{background:var(--chalk);border:1px solid var(--line);border-radius:12px;padding:8px 4px;text-align:center}
+.lgrates b{display:block;font-family:var(--display);font-size:22px;font-weight:400;line-height:1}
+.lgrates span{font-size:10.5px;color:var(--muted)}
+.calib{background:var(--chalk);border:1px solid var(--line);border-radius:18px;padding:14px}
+.calib svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:14px;font-size:11.5px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.ledger li{list-style:none;display:flex;justify-content:space-between;align-items:center;font-size:13.5px;padding:10px 0;border-top:1px solid var(--line);gap:8px}
+.ledger li:first-child{border-top:0}
+.ledger small{display:block;color:var(--muted);font-size:11.5px}
+.pro{margin-top:16px;background:var(--pitch);color:var(--chalk);border-radius:22px;padding:18px}
+.pro h4{font-family:var(--display);font-size:34px;font-weight:400;line-height:.95}
+.pro h4 span{color:var(--flag)}
+.pro ul{list-style:none;margin:12px 0 14px}
+.pro li{font-size:13.5px;padding:5px 0 5px 22px;position:relative;line-height:1.4}
+.pro li::before{content:"";position:absolute;left:0;top:9px;width:12px;height:7px;border-left:2px solid var(--flag);border-bottom:2px solid var(--flag);transform:rotate(-45deg)}
+.pro .btn-flag{width:100%;padding:14px;font-size:15px}
+.pro small{display:block;text-align:center;margin-top:8px;font-size:12px;opacity:.75}
+
+/* nav */
+nav{flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--chalk);border-top:1px solid var(--line);padding:8px 6px 22px}
+nav button{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--muted);padding:6px 0;border-radius:10px}
+nav button svg{width:24px;height:24px}
+nav button[aria-selected="true"]{color:var(--pitch)}
+nav .dot{width:5px;height:5px;border-radius:50%;background:transparent}
+nav button[aria-selected="true"] .dot{background:var(--flag)}
+.toast{position:absolute;left:50%;bottom:100px;transform:translate(-50%,20px);background:var(--ink);color:var(--chalk);font-size:13.5px;font-weight:600;padding:10px 16px;border-radius:12px;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap;z-index:9}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+
+/* ===================== KIT ROOM SKIN ===================== */
+.rulebar,.lockover,.locked,.lockwrap{color:var(--ink)}
+.pickrow select{color:var(--ink)}
+#fanBody>.cap .bar i{background:#fff}
+#fanBody>.cap.top1 .bar i{background:var(--flag)}
+.top h3{white-space:nowrap;font-size:36px}
+.screen{background-color:#0E6B3A;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 1px,transparent 1px 14px);color:#fff}
+.status{background:transparent;color:#fff}
+.top h3{color:#fff}.top small{color:#CFEBD8}
+.pill{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);color:#fff}
+.pill.flag{background:var(--flag);border-color:var(--flag);color:var(--ink)}
+.chip{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.28);color:#fff}
+.chip[aria-pressed="true"]{background:#fff;color:var(--ink);border-color:#fff}
+.seg{background:rgba(0,0,0,.2);border-radius:14px}
+.seg button{color:#CFEBD8;border-radius:11px}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink)}
+.fx,.card,table,.invite,.fhead div,.rule,.bfly,.recent div,.slots div,.lgrates div,.calib{border-color:transparent}
+.fx{border-radius:22px;color:var(--ink)}
+.teams.kit{grid-template-columns:50px minmax(0,1fr) auto minmax(0,1fr) 50px;gap:6px}
+.teams.kit .team{font-size:13.5px;line-height:1.2}
+.teams.kit .score{min-width:58px;font-size:30px}
+.adslot{border-color:rgba(255,255,255,.4);color:#CFEBD8;background:repeating-linear-gradient(135deg,transparent 0 10px,rgba(255,255,255,.06) 10px 20px)}
+.adslot b{color:#fff}.adslot button{color:var(--flag)}
+.caption,.pitch-key,.pager{color:#CFEBD8}
+.pager button{color:#fff}
+.sec{color:#fff}.sec span{color:#CFEBD8}
+.pickrow label{color:#CFEBD8}
+#fanBody>.cap .who small{color:#CFEBD8}
+#fanBody>.cap .bar{background:rgba(255,255,255,.16)}
+.detail{background-color:#0E6B3A;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 1px,transparent 1px 14px);color:#fff}
+.d-bar button{color:#fff}.d-bar span{color:#CFEBD8}
+.card,.d-body .ghost{color:var(--ink)}
+.board{background:#fff;color:var(--ink);border-radius:24px}
+.board::after{border-color:rgba(16,36,26,.07)}
+.board .fx-head{color:var(--muted)}
+.board .score{font-size:44px;min-width:0}
+.board .score small{color:var(--muted);font-size:10px;max-width:96px;margin:4px auto 0;line-height:1.3}
+.kitduel{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;text-align:center;gap:6px}
+.kitduel .team{display:block;font-weight:800;font-size:14px;margin-top:2px}
+.scorers{color:var(--ink);opacity:.8}
+.rlist .cd{width:22px;height:23px;border-radius:0;display:block}
+.pitch{border:2px solid rgba(255,255,255,.55);background:repeating-linear-gradient(180deg,#1F8F4E 0 10%,#1A8247 10% 20%)}
+.mk{width:72px}
+.sh2{position:relative;line-height:0;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
+.sh2.hi::before{content:"";position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;box-shadow:0 0 0 2.5px var(--flag);background:rgba(242,194,48,.18)}
+.sh2 svg{position:relative}
+.mk .tg{left:-12px;bottom:-4px}
+.mk .nm{background:rgba(10,30,18,.75);margin-top:1px}
+.pred-card{background:#fff;color:var(--ink);border-radius:24px}
+.pred-card::after{border-color:rgba(16,36,26,.07)}
+.pred-card .fx-head{color:var(--muted)}
+.goals{line-height:0;display:flex;justify-content:center;min-height:108px}
+.step button{background:#E2ECE5}
+.dash{color:var(--muted)}
+.vs-model{background:#F2F6F1}
+.vs-model b{color:var(--ink);background:var(--flag);padding:2px 8px 0;border-radius:6px}
+.rule{color:var(--ink)}
+.primary{background:var(--flag);color:var(--ink)}
+.primary.done{background:#fff;color:var(--pitch)}
+.invite,.fhead div,.slots div,.recent div,.lgrates div{color:var(--ink)}
+.backs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 8px}
+.bk{display:flex;flex-direction:column;align-items:center;text-align:center;position:relative}
+.bk svg{width:100%;height:auto;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
+.bk .bp{font-family:var(--display);font-size:18px;line-height:1;margin-bottom:4px}
+.bk .bm{font-size:11px;color:#CFEBD8;margin-top:5px}
+.bk .bm b{font-size:11px}
+.bk .up{color:#9FF0BC}.bk .dn{color:#FFB3AA}
+.tblx{margin-top:12px}
+.tblx summary{font-size:13px;font-weight:700;color:#fff;cursor:pointer;padding:6px 0;list-style:none}
+.tblx summary::-webkit-details-marker{display:none}
+.tblx summary::before{content:"+ "}
+.tblx[open] summary::before{content:"\2212  "}
+.tblx table{margin-top:6px;color:var(--ink)}
+table{color:var(--ink)}
+.hero-stat{background:#fff;color:var(--ink);grid-template-columns:104px 1fr;padding:14px 16px}
+.hero-stat .big{line-height:0}
+.hero-stat .bigt{display:block;font-family:var(--display);font-weight:400;font-size:30px;line-height:1;margin-bottom:4px}
+.hero-stat p{opacity:1;color:var(--ink)}
+.ledger{color:var(--ink)}
+.pro{background:var(--ink)}
+.passcard{background:var(--ink)}
+.dclock{background:var(--ink)}
+.avail{color:var(--ink)}
+nav{background:#fff;border-top:0;border-radius:26px 26px 0 0;padding-top:10px}
+nav button{color:var(--muted);border-radius:14px}
+nav button[aria-selected="true"]{background:var(--pitch);color:#fff}
+nav button[aria-selected="true"] .dot{background:var(--flag)}
+
+@media (max-width:900px){
+  .stage{grid-template-columns:1fr;gap:36px;padding:28px 16px 48px}
+  .phone{position:relative;top:0;margin:0 auto;order:-1}
+  .notes{order:1}
+}
+@media (max-width:430px){
+  .phone{width:100%;height:780px;border-radius:40px;padding:8px}
+  .screen{border-radius:34px}
+  .brand h1{font-size:46px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===================== PRO + SHEETS ===================== */
+.overlay{position:absolute;inset:0;z-index:20;background:rgba(6,23,13,.62);display:flex;align-items:flex-end}
+.overlay[hidden]{display:none}
+.sheet{position:relative;background:#fff;color:var(--ink);width:100%;border-radius:26px 26px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom));max-height:90%;overflow-y:auto;animation:up .28s ease}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.sheet .x{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:50%;background:#EEF3EF;display:grid;place-items:center}
+.sheet h2{font-family:var(--display);font-weight:400;font-size:38px;line-height:.95}
+.sheet h2 span{color:#B8860B}
+.sheet .lead{font-size:14px;line-height:1.5;color:var(--muted);margin:6px 0 12px;max-width:34ch}
+.pw-top{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;margin-bottom:6px;padding-right:40px}
+.pw-list{list-style:none;margin:6px 0 14px}
+.pw-list li{font-size:14px;line-height:1.4;padding:7px 0 7px 26px;position:relative;border-top:1px solid #EEF3EF}
+.pw-list li::before{content:"";position:absolute;left:3px;top:12px;width:12px;height:7px;border-left:2.5px solid var(--pitch);border-bottom:2.5px solid var(--pitch);transform:rotate(-45deg)}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.plan{border:2px solid var(--line);border-radius:16px;padding:12px;text-align:left;position:relative}
+.plan b{display:block;font-family:var(--display);font-weight:400;font-size:28px;line-height:1}
+.plan span{font-size:12px;color:var(--muted)}
+.plan em{position:absolute;top:-10px;right:10px;font-style:normal;font-size:10.5px;font-weight:800;background:var(--flag);padding:2px 7px;border-radius:6px}
+.plan[aria-pressed="true"]{border-color:var(--pitch);background:#EAF5EE}
+.pw-cta{width:100%;background:var(--flag);color:var(--ink);font-weight:800;font-size:16px;padding:16px;border-radius:16px;min-height:54px}
+.pw-fine{font-size:11.5px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.45}
+.how h3{font-size:15px;font-weight:800;margin:16px 0 6px}
+.how p,.how li{font-size:13.5px;line-height:1.55;color:#2D4236}
+.how ol{padding-left:20px}
+.how li{margin:6px 0}
+.how .note{background:#FCF3D2;border-radius:12px;padding:10px 12px;font-size:12.5px;margin-top:14px}
+.linkbtn{font-size:13px;font-weight:700;color:var(--pitch);text-decoration:underline;text-underline-offset:3px;padding:6px 0}
+.grid5{display:grid;grid-template-columns:28px repeat(5,1fr);gap:3px;font-size:11px;text-align:center;margin-top:8px}
+.grid5 .hd{font-weight:700;color:var(--muted);padding:4px 0}
+.grid5 .c{border-radius:5px;padding:7px 0;font-weight:700;font-family:var(--display);font-size:15px;line-height:1}
+.toplines{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.toplines span{font-size:12px;font-weight:700;background:#EEF3EF;border-radius:8px;padding:5px 8px}
+.toplines span b{font-family:var(--display);font-weight:400;font-size:16px;margin-right:4px}
+.metric{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:13.5px}
+.metric:first-of-type{border-top:0}
+.metric b{font-family:var(--display);font-weight:400;font-size:22px}
+.metric .bar{grid-column:1/-1;height:8px;margin-top:-2px}
+.metric.me{font-weight:700}
+.demo-toggle{display:inline-flex;gap:4px;background:rgba(0,0,0,.25);border-radius:12px;padding:4px;margin:0 0 22px}
+.demo-toggle button{color:#CFEBD8;font-weight:700;font-size:13px;padding:8px 14px;border-radius:9px}
+.demo-toggle button[aria-pressed="true"]{background:#fff;color:var(--ink)}
+.demo-toggle span{align-self:center;font-size:12px;color:#CFEBD8;padding:0 8px 0 6px}
+.pill.pro{background:var(--flag);border-color:var(--flag);color:var(--ink);font-weight:800}
+
+/* ===================== FIT TO SCREEN ===================== */
+.notes-btn{display:none}
+@media (max-width:600px){
+  html,body{height:100%;overflow:hidden;background:#0E6B3A}
+  .stage{display:block;padding:0;margin:0;max-width:none}
+  .notes{display:none}
+  .notes.open{display:block;position:fixed;inset:0;z-index:50;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#0E6B3A;padding:calc(64px + env(safe-area-inset-top)) 20px 48px;max-width:none}
+  .phone{position:fixed;inset:0;width:100%;height:100%;height:100dvh;border-radius:0;padding:0;box-shadow:none;margin:0;background:#0E6B3A}
+  .screen{border-radius:0}
+  .status{display:none}
+  .detail{inset:0}
+  .view{padding-top:calc(10px + env(safe-area-inset-top))}
+  .d-bar{padding-top:calc(6px + env(safe-area-inset-top))}
+  nav{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .toast{bottom:calc(146px + env(safe-area-inset-bottom))}
+  body:has(.overlay:not([hidden])) .notes-btn{display:none}
+  .notes-btn{display:flex;align-items:center;gap:6px;position:fixed;z-index:60;right:12px;bottom:calc(92px + env(safe-area-inset-bottom));height:40px;padding:0 14px;border-radius:20px;background:#10241A;color:#fff;font-weight:700;font-size:13px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+  .notes-btn[aria-expanded="true"]{top:calc(12px + env(safe-area-inset-top));bottom:auto;background:#F2C230;color:#10241A}
+}
+</style>
+</head>
+<body>
+<button class="notes-btn" id="notesBtn" aria-expanded="false" aria-controls="designNotes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span>Design notes</span></button>
+<div class="stage">
+
+  <section class="notes" id="designNotes" aria-label="Design notes">
+    <div class="brand">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#FFFFFF"></rect><path d="M12 40h20M8 52h22" stroke="#0E6B3A" stroke-width="6" stroke-linecap="round"></path><path d="M14 64h16" stroke="#F2C230" stroke-width="6" stroke-linecap="round"></path><circle cx="62" cy="52" r="24" fill="#FFFFFF" stroke="#10241A" stroke-width="4"></circle><path d="M62 42l9 6.5-3.4 10.6H56.4L53 48.5z" fill="#10241A"></path><path d="M62 42V30M71 48.5l11.5-4M67.6 59.1l7 9.4M56.4 59.1l-7 9.4M53 48.5l-11.5-4" stroke="#10241A" stroke-width="3"></path></svg>
+      <div>
+        <h1>FootyRush</h1>
+        <p>Kit Room edition: every team is its shirt</p>
+      </div>
+    </div>
+
+    <div class="demo-toggle" role="group" aria-label="Demo mode"><span>Demo as</span><button aria-pressed="true" data-demo="free">Free</button><button aria-pressed="false" data-demo="pro">Pro</button></div>
+    <p class="lede">The full app in the Kit Room look. Every team appears as its shirt, and the number on the back is the data: win chance on fixtures, goals on results, ratings in lineups, points in fantasy and in your league table. Nothing was removed. FPL only covers the Premier League. FootyRush covers all five top leagues, for free. You can pick a fantasy squad from all five, predict any match, and open any game for stats, ratings and lineups. Pro adds the deep player comparisons from your original Insights tab.</p>
+
+    <h2 class="group">Kit Room changes</h2>
+    <div class="change">
+      <h3>A new shirt with the number dead centre</h3>
+      <p>The shirt is drawn from the back: a short sleeve, a curved collar, and the name across the shoulders. The number is centred both ways in the torso so it reads like a real squad number, and it shrinks for three-character values like ratings.</p>
+    </div>
+    <div class="change">
+      <h3>Shirt numbers carry the data everywhere</h3>
+      <p>Upcoming fixtures show each side's win chance on its shirt, results show goals, the match centre lineup shows every player's rating, the fantasy pitch shows points, and the league table is a row of shirt backs with each person's total. The model always wears yellow.</p>
+    </div>
+    <div class="change">
+      <h3>Logo A, the Speed Ball</h3>
+      <p>The app icon and header use the Speed Ball mark, with its single yellow speed line tying into the corner-flag accent used for upsets and Pro.</p>
+    </div>
+    <div class="change">
+      <h3>Pinstripe green ground, white cards</h3>
+      <p>The app sits on a pinstriped pitch green like a kit fabric, with white cards for content so data stays easy to read. Club colours only appear on shirts, so no licensed badges are needed.</p>
+    </div>
+
+    <h2 class="group">Everything carried over</h2>
+    <div class="change">
+      <h3>Every game opens a match centre, starting with a preview</h3>
+      <p>Every fixture and result has a Preview with the model's odds and reasons, form, head to head, players to watch and team news. Finished games add team stats, player ratings and both lineups, with each player's rating in the corner of their marker. Previews of finished games also show how the model's call turned out.</p>
+    </div>
+    <div class="change">
+      <h3>All five leagues are free</h3>
+      <p>The league filter works on Matchday, Predict and Fantasy without a paywall. Coverage brings people in, so it shouldn't be the thing you charge for.</p>
+    </div>
+    <div class="change">
+      <h3>Fantasy across leagues, or just one</h3>
+      <p>Multi-league mode lets you build one squad from all five leagues, with at least 3 leagues and at most 3 players per club. Single-league mode limits the squad to one competition. This is the clearest difference from FPL.</p>
+    </div>
+    <div class="change">
+      <h3>Draft leagues alongside the classic game</h3>
+      <p>Fantasy now has a Draft section: a live snake draft where each player can only belong to one team in your league, with a pick clock and model projections for every player. It works across all 5 leagues or within one. FPL has no draft mode, which makes it a second reason for groups to switch.</p>
+    </div>
+    <div class="change">
+      <h3>Insights moves into Fantasy as Compare</h3>
+      <p>Player comparison now sits where fantasy decisions happen, and goalkeepers get their own stats. Free users see points, goals and assists. Pro unlocks the full per-90 breakdown and league-adjusted numbers, so Mbappé and Kane can be compared fairly.</p>
+    </div>
+    <div class="change">
+      <h3>The model still plays in your league</h3>
+      <p>The model still sits in every private league table as a player, and predictions still earn a +2 bonus for calling a result the model gave under 25%.</p>
+    </div>
+    <div class="change cut">
+      <h3>Live goal alerts and the Pulse tab</h3>
+      <p>Still cut for now. They need paid live data and are FotMob's strongest feature.</p>
+    </div>
+
+    <h2 class="group">How it makes money</h2>
+    <div class="money"><b>$2.99/mo</b><h3>FootyRush Pro</h3><p>Full player comparisons, league-adjusted stats, the fantasy planner, unlimited mock drafts, full model reasoning and no ads. $19.99 a year.</p></div>
+    <div class="money"><b>$9.99</b><h3>League Pass, per league, per season</h3><p>One organiser pays and the whole private league gets custom trophies, head-to-head cups, a weekly recap card and no ads. A group buys it once, which is an easier sell than asking each member to pay.</p></div>
+    <div class="money"><b>Ads</b><h3>One ad slot per screen in the free app</h3><p>Pays for the free tier's data costs. Removing ads is part of the reason to upgrade.</p></div>
+    <div class="money"><b>Affiliate</b><h3>Tickets and kits from the match centre</h3><p>Upcoming games link to ticket and shirt partners for a commission. It fits naturally on a match screen.</p></div>
+    <div class="money"><b>Later</b><h3>Sponsored public leagues</h3><p>Once there are enough players, brands can sponsor a global league with prizes. Keep it free to enter: paid entry with cash prizes brings gambling rules into play.</p></div>
+
+    <span class="sample">All teams, players, odds, ratings and points in the prototype are sample data, not real results.</span>
+  </section>
+
+  <div class="phone" aria-label="FootyRush app prototype">
+    <div class="screen">
+      <div class="status"><span>9:41</span><span class="notch" aria-hidden="true"></span><span>100%</span></div>
+
+      <main class="view" id="view">
+        <section class="panel on" id="p-matchday" role="tabpanel" aria-label="Matchday">
+          <div class="top"><div style="display:flex;gap:10px;align-items:center"><svg width="36" height="36" viewBox="0 0 100 100" aria-hidden="true" style="flex:none"><rect width="100" height="100" rx="24" fill="#0E6B3A" stroke="#FFFFFF" stroke-width="4"></rect><path d="M12 40h20M8 52h22" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"></path><path d="M14 64h16" stroke="#F2C230" stroke-width="6" stroke-linecap="round"></path><circle cx="62" cy="52" r="24" fill="#FFFFFF" stroke="#10241A" stroke-width="4"></circle><path d="M62 42l9 6.5-3.4 10.6H56.4L53 48.5z" fill="#10241A"></path></svg><div><h3>Matchweek 7</h3><small id="mdSub"></small></div></div><span class="pill">Sample</span></div>
+          <div class="chips lgchips" role="group" aria-label="League"></div>
+          <div class="seg" role="group" aria-label="Show">
+            <button aria-pressed="true" data-md="up">Upcoming</button>
+            <button aria-pressed="false" data-md="ft">Results</button>
+          </div>
+          <div id="mdSlip"></div>
+          <div id="fixtures"></div>
+        </section>
+
+        <section class="panel" id="p-predict" role="tabpanel" aria-label="Predict">
+          <div class="top"><div><h3>Your picks</h3><small id="predSub"></small></div><span class="pill">MW 7</span></div>
+          <div class="chips lgchips" role="group" aria-label="League"></div>
+          <div class="pred-card">
+            <div class="fx-head"><span id="pKick"></span><span id="pEdge"></span></div>
+            <div class="pred-grid">
+              <div class="side"><div class="nm" id="pHome"></div><div class="goals" id="gH" aria-live="polite"></div>
+                <div class="step"><button aria-label="Fewer home goals" data-g="h" data-d="-1">&minus;</button><button aria-label="More home goals" data-g="h" data-d="1">+</button></div></div>
+              <div class="dash">:</div>
+              <div class="side"><div class="nm" id="pAway"></div><div class="goals" id="gA" aria-live="polite"></div>
+                <div class="step"><button aria-label="Fewer away goals" data-g="a" data-d="-1">&minus;</button><button aria-label="More away goals" data-g="a" data-d="1">+</button></div></div>
+            </div>
+            <div class="vs-model"><span>Model's most likely score</span><b id="pModel"></b></div>
+          </div>
+          <div class="rules">
+            <div class="rule"><b>3</b><span>Exact score</span></div>
+            <div class="rule"><b>1</b><span>Right result</span></div>
+            <div class="rule bonus"><b>+2</b><span>Result the model gave under 25%</span></div>
+          </div>
+          <button class="primary" id="lockBtn">Lock prediction</button>
+          <div class="pager"><button id="prevBtn">Previous match</button><span id="pagerTxt"></span><button id="nextBtn">Next match</button></div>
+        </section>
+
+        <section class="panel" id="p-leagues" role="tabpanel" aria-label="Leagues">
+          <div class="top"><div><h3>Sunday Squad</h3><small>Private league, 6 players, all 5 leagues</small></div><span class="pill flag">League Pass</span></div>
+          <div class="invite"><div>Invite code<code>FR-7KQ2</code></div><button id="inviteBtn">Invite friends</button></div>
+          <div class="seg" role="group" aria-label="Competition">
+            <button aria-pressed="true" data-lt="pred">Predictions</button>
+            <button aria-pressed="false" data-lt="fan">Fantasy</button>
+            <button aria-pressed="false" data-lt="cup">H2H Cup</button>
+          </div>
+          <div id="leagueTable"></div>
+          <p class="caption" id="leagueCap"></p>
+          <div class="sec">Your other leagues</div>
+          <table><tbody>
+            <tr><td>Office Five-a-Side<br><small style="color:var(--muted);font-size:11.5px">Premier League only</small></td><td class="n">4th</td></tr>
+            <tr><td>FootyRush Global<br><small style="color:var(--muted);font-size:11.5px">All 5 leagues</small></td><td class="n">12,408th</td></tr>
+          </tbody></table>
+          <div class="passcard">
+            <h4>League <span>Pass</span></h4>
+            <p>One person pays $9.99 for the season and everyone in the league gets custom trophies, the head-to-head cup, a weekly recap card and no ads.</p>
+            <button class="btn-flag" data-toast="League Pass checkout would open here">Get League Pass for Sunday Squad</button>
+          </div>
+        </section>
+
+        <section class="panel" id="p-fantasy" role="tabpanel" aria-label="Fantasy">
+          <div class="top"><div><h3>Fantasy</h3><small id="fanSub"></small></div><span class="pill">Sample</span></div>
+          <div class="seg" role="group" aria-label="Game mode">
+            <button aria-pressed="true" data-mode="multi">All 5 leagues</button>
+            <button aria-pressed="false" data-mode="single">One league</button>
+          </div>
+          <div class="chips lgchips" id="fanChips" role="group" aria-label="League" hidden></div>
+          <div class="seg" role="group" aria-label="Section">
+            <button aria-pressed="true" data-fv="squad">Squad</button>
+            <button aria-pressed="false" data-fv="draft">Draft</button>
+            <button aria-pressed="false" data-fv="compare">Compare</button>
+            <button aria-pressed="false" data-fv="plan">Planner</button>
+          </div>
+          <div id="fanBody"></div>
+        </section>
+
+        <section class="panel" id="p-record" role="tabpanel" aria-label="Record">
+          <div class="top"><div><h3>Model record</h3><small>2026/27 season so far, all 5 leagues</small></div><span class="pill">Sample</span></div>
+          <div class="hero-stat"><div class="big" id="recShirt"></div><p><b class="bigt">55% correct</b>Correct result in 172 of 313 matches. Always picking the home team would have hit 44%.</p></div>
+          <div class="lgrates">
+            <div><b>54%</b><span>PL</span></div><div><b>57%</b><span>LaLiga</span></div><div><b>52%</b><span>Serie A</span></div><div><b>55%</b><span>Bundes</span></div><div><b>58%</b><span>Ligue 1</span></div>
+          </div>
+          <div class="sec">Probability accuracy <span>Lower is better</span></div>
+          <div class="card">
+            <div class="metric me"><span>FootyRush model</span><b>0.204</b><div class="bar"><i style="width:84.6%"></i></div></div>
+            <div class="metric"><span>Bookmaker closing odds</span><b>0.198</b><div class="bar"><i style="width:82.2%;background:#10241A"></i></div></div>
+            <div class="metric"><span>Always pick the home team</span><b>0.241</b><div class="bar"><i style="width:100%;background:#9DB8A6"></i></div></div>
+            <p class="caption" style="color:var(--muted);margin-top:6px">Ranked probability score across 313 matches. Sample values. The model trails the betting market slightly and clearly beats the home-team baseline.</p>
+            <button class="linkbtn" data-how>How the model works</button>
+          </div>
+          <div class="sec">Are its odds honest? <span>Calibration</span></div>
+          <div class="calib">
+            <svg viewBox="0 0 320 150" role="img" aria-label="Predicted win chance compared with how often teams actually won. Bars are close at every level.">
+              <g font-family="Inter" font-size="10" fill="#5B6E62">
+                <line x1="30" y1="120" x2="315" y2="120" stroke="#D3E2D7"/>
+                <line x1="30" y1="70" x2="315" y2="70" stroke="#D3E2D7" stroke-dasharray="3 3"/>
+                <line x1="30" y1="20" x2="315" y2="20" stroke="#D3E2D7" stroke-dasharray="3 3"/>
+                <text x="0" y="123">0%</text><text x="0" y="73">50%</text><text x="0" y="23">100%</text>
+              </g>
+              <g id="calibBars"></g>
+            </svg>
+            <div class="legend"><span><i style="background:#0E6B3A"></i>Model said</span><span><i style="background:#F2C230"></i>Actually happened</span></div>
+          </div>
+          <div class="sec">Last matchweek <span>Tap a match for details</span></div>
+          <ul class="ledger card" id="ledger"></ul>
+          <div class="pro" id="proCard" data-free="1">
+            <h4>FootyRush <span>Pro</span></h4>
+            <ul>
+              <li>Full player comparisons with league-adjusted stats</li>
+              <li>Fantasy planner: chips, transfers and 5-week projections</li>
+              <li>Unlimited mock drafts against the model</li>
+              <li>Full model reasoning for every match</li>
+              <li>No ads anywhere</li>
+            </ul>
+            <button class="btn-flag" data-upgrade="">Start 7-day free trial</button>
+            <small>Then $2.99 a month or $19.99 a year. Cancel any time.</small>
+          </div>
+        </section>
+      </main>
+
+      <div class="detail" id="detail" aria-hidden="true" role="dialog" aria-label="Match centre">
+        <div class="d-bar"><button id="backBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 6l-6 6 6 6"/></svg>Back</button><span id="dLg"></span></div>
+        <div class="d-body" id="dBody"></div>
+      </div>
+
+      <nav role="tablist" aria-label="Main">
+        <button role="tab" aria-selected="true" data-tab="matchday"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Matchday<span class="dot"></span></button>
+        <button role="tab" aria-selected="false" data-tab="predict"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg>Predict<span class="dot"></span></button>
+        <button role="tab" aria-selected="false" data-tab="leagues"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/></svg>Leagues<span class="dot"></span></button>
+        <button role="tab" aria-selected="false" data-tab="fantasy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3l-5 3 2 4 3-1v12h8V9l3 1 2-4-5-3a4 4 0 0 1-8 0z"/></svg>Fantasy<span class="dot"></span></button>
+        <button role="tab" aria-selected="false" data-tab="record"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Record<span class="dot"></span></button>
+      </nav>
+      <div class="toast" id="toast" role="status"></div>
+      <div class="overlay" id="paywall" hidden role="dialog" aria-modal="true" aria-labelledby="pwTitle">
+        <div class="sheet">
+          <button class="x" data-close aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          <div class="pw-top"><span id="pwShirt"></span><div><h2 id="pwTitle">FootyRush <span>Pro</span></h2><p class="lead" id="pwReason">Everything in the free app, plus the deep stuff.</p></div></div>
+          <ul class="pw-list">
+            <li>Full player comparisons, adjusted for league strength</li>
+            <li>Scoreline chances and the full model breakdown for every match</li>
+            <li>Fantasy planner: chips and transfers 5 weeks ahead</li>
+            <li>Predicted lineups 48 hours before kick-off</li>
+            <li>Unlimited mock drafts against the model</li>
+            <li>No ads anywhere</li>
+          </ul>
+          <div class="plans" role="group" aria-label="Plan">
+            <button class="plan" aria-pressed="true" data-plan="year"><em>Save 44%</em><b>$19.99</b><span>a year, about $1.67 a month</span></button>
+            <button class="plan" aria-pressed="false" data-plan="month"><b>$2.99</b><span>a month</span></button>
+          </div>
+          <button class="pw-cta" id="pwGo">Start 7-day free trial</button>
+          <p class="pw-fine">Demo only. No payment is taken. Then <span id="pwPrice">$19.99 a year</span>, cancel any time.</p>
+        </div>
+      </div>
+      <div class="overlay" id="howSheet" hidden role="dialog" aria-modal="true" aria-labelledby="howTitle">
+        <div class="sheet how">
+          <button class="x" data-close aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          <h2 id="howTitle">How the model works</h2>
+          <p class="lead">A Poisson goals model. Simple, transparent and easy to check.</p>
+          <h3>From ratings to a scoreline</h3>
+          <ol>
+            <li><b>Team ratings.</b> Every team gets an attack rating and a defence rating from its recent matches, plus a home-advantage boost.</li>
+            <li><b>Expected goals for this match.</b> Home attack against away defence, with the home boost, gives the home side's expected goals. The same the other way round gives the away side's.</li>
+            <li><b>Every scoreline.</b> A Poisson distribution turns each side's expected goals into the chance of scoring 0, 1, 2, 3 or more. Combining both sides gives every scoreline's chance.</li>
+            <li><b>Win, draw, loss.</b> Adding up the scorelines gives the three percentages on every fixture. The most likely scoreline is the model's pick.</li>
+          </ol>
+          <h3>How it's checked</h3>
+          <p>Every finished match is scored with the ranked probability score, which rewards confident correct calls and punishes confident wrong ones. It's compared against two baselines: bookmaker closing odds and always picking the home team. The calibration chart checks that 60% calls come in about 60% of the time.</p>
+          <h3>What's next</h3>
+          <p>Using expected goals instead of goals as the input, weighting recent games more heavily, a correction for low-scoring draws (Dixon-Coles), and adjusting for confirmed lineups.</p>
+          <h3>Data</h3>
+          <p>Fixtures and results from football-data.org. Player stats from a paid provider once Pro launches.</p>
+          <p class="note">All numbers in this demo are sample values for design purposes, not live backtest results.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- sample data ---------- */
+const LG={PL:"Premier League",LL:"LaLiga",SA:"Serie A",BL:"Bundesliga",L1:"Ligue 1"};
+const COL={Arsenal:["#DB0007","#fff"],Chelsea:["#034694","#fff"],Barcelona:["#A50044","#fff"],"Atlético":["#CB3524","#fff"],Inter:["#0068A8","#fff"],Napoli:["#12A0D7","#fff"],Bayern:["#DC052D","#fff"],Dortmund:["#FDE100","#10241A"],PSG:["#004170","#fff"],Marseille:["#2FAEE0","#fff"]};
+Object.assign(COL,{"Man City":["#6CABDD","#10241A"],Liverpool:["#C8102E","#fff"],Brentford:["#E30613","#fff"],Everton:["#003399","#fff"],"Man United":["#DA291C","#fff"],Newcastle:["#241F20","#fff"],"Real Madrid":["#F7F7F7","#10241A"],Villarreal:["#FFE667","#10241A"],"Athletic Club":["#EE2523","#fff"],Sevilla:["#F7F7F7","#D4021D"],"Real Betis":["#00954C","#fff"],Juventus:["#1A1A1A","#fff"],Milan:["#D3122B","#fff"],Como:["#1C4F9C","#fff"],Leverkusen:["#E32221","#fff"],Stuttgart:["#F7F7F7","#E32219"],"RB Leipzig":["#F7F7F7","#DD0741"],Monaco:["#E7222E","#fff"],Lille:["#C8102E","#fff"],Lyon:["#F7F7F7","#1D428A"]});
+const CODE2TEAM={ARS:"Arsenal",PSG:"PSG",INT:"Inter",BAR:"Barcelona",CHE:"Chelsea",BAY:"Bayern",MCI:"Man City",ATM:"Atlético",NAP:"Napoli",BVB:"Dortmund",OM:"Marseille"};
+const color=t=>COL[t]||COL[CODE2TEAM[t]]||["#10241A","#fff"];
+/* back-of-shirt: name across the shoulders, number centred in the torso */
+function shirtSVG(bg,fg,num,w,name,label){
+  const n=String(num),fs=n.length>=4?28:n.length===3?34:46,cy=name?67:63,light=/^#F/i.test(bg);
+  return `<svg width="${w}" height="${Math.round(w*1.04)}" viewBox="0 0 100 104" ${label?`role="img" aria-label="${label}"`:'aria-hidden="true"'}>
+  <path d="M33 5Q50 14 67 5L79 9L97 26L87 45L77 39V99Q50 103 23 99V39L13 45L3 26L21 9Z" fill="${bg}" stroke="${light?"rgba(16,36,26,.35)":"rgba(255,255,255,.55)"}" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M33 5Q50 14 67 5" fill="none" stroke="${fg}" stroke-opacity=".55" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M3 26L13 45M97 26L87 45" stroke="${fg}" stroke-opacity=".35" stroke-width="4"/>
+  ${name?`<text x="50" y="29" text-anchor="middle" dominant-baseline="central" font-family="Inter, sans-serif" font-weight="900" font-size="${name.length>8?7.5:9.5}" letter-spacing="1" fill="${fg}">${name}</text>`:""}
+  <text x="50" y="${cy}" text-anchor="middle" dominant-baseline="central" font-family="Bebas Neue, Impact, sans-serif" font-size="${fs}" fill="${fg}">${n}</text></svg>`}
+const shirt=(team,num,w,name,label)=>{const [bg,fg]=color(team);return shirtSVG(bg,fg,num,w,name,label)};
+
+const FX=[
+ {id:1,lg:"PL",h:"Arsenal",a:"Man City",k:"Sat 12:30pm",p:[41,27,32],s:[1,1],why:["Arsenal create 2.1 expected goals a game at home","City have conceded first in 3 of their last 5","Both sides played Tuesday, so rest is equal"],fh:"WWDWL",fa:"WLWDW"},
+ {id:2,lg:"PL",h:"Liverpool",a:"Brentford",k:"Sat 3:00pm",p:[68,19,13],s:[2,0],why:["Liverpool have won 9 of their last 10 at Anfield","Brentford's first-choice keeper is out","Brentford average 0.9 expected goals away"],fh:"WWWDW",fa:"LDWLL"},
+ {id:3,lg:"PL",h:"Everton",a:"Man United",k:"Sat 5:30pm",p:[37,28,35],s:[1,1],edge:"Upset watch",why:["Most fans pick United, but the model has this close to even","Everton have scored from set pieces in 4 straight games","United have kept 1 clean sheet in 7 away games"],fh:"DWDLW",fa:"LWLDW"},
+ {id:4,lg:"PL",h:"Chelsea",a:"Newcastle",k:"Sun 2:00pm",p:[46,26,28],s:[1,0],why:["Chelsea are unbeaten in 6 at home","Newcastle play in Europe on Wednesday","2 of the last 3 meetings were 1-goal games"],fh:"DWWWD",fa:"WDLWW"},
+ {id:5,lg:"LL",h:"Real Madrid",a:"Villarreal",k:"Sat 3:00pm",p:[66,20,14],s:[2,0],why:["Madrid have scored in 21 straight home games","Villarreal concede 1.6 expected goals a game away","Madrid had a full week's rest"],fh:"WWWLW",fa:"WDWLD"},
+ {id:6,lg:"LL",h:"Athletic Club",a:"Barcelona",k:"Sat 8:00pm",p:[27,24,49],s:[1,2],why:["Barcelona average 2.6 goals a game this season","Athletic press high, which Barcelona have struggled against away","Athletic are missing two centre-backs"],fh:"WDLWW",fa:"WWDWW"},
+ {id:7,lg:"LL",h:"Sevilla",a:"Real Betis",k:"Sun 4:00pm",p:[36,30,34],s:[1,1],edge:"Upset watch",why:["Derbies here are tight: 4 of the last 6 were draws","Betis are favourites with fans, but their away form is weak","Sevilla have won 3 straight at home"],fh:"WWWLD",fa:"DWWWL"},
+ {id:8,lg:"SA",h:"Juventus",a:"Milan",k:"Sat 2:00pm",p:[40,31,29],s:[1,1],why:["Juventus have conceded 4 goals in 7 home games","Milan create most of their chances on the counter","The last 3 meetings had under 3 goals"],fh:"DWDWW",fa:"WWLDW"},
+ {id:9,lg:"SA",h:"Napoli",a:"Como",k:"Sun 11:30am",p:[61,23,16],s:[2,0],why:["Napoli are unbeaten at home this season","Como have the league's highest expected goals against away","Napoli's starting XI is fully fit"],fh:"LWWDW",fa:"WLDLW"},
+ {id:10,lg:"BL",h:"Leverkusen",a:"Stuttgart",k:"Sat 9:30am",p:[52,24,24],s:[2,1],why:["Leverkusen create the 2nd most chances in the league","Stuttgart have scored in every away game","Leverkusen's back line is missing its captain"],fh:"WDWWL",fa:"WWLWD"},
+ {id:11,lg:"BL",h:"Dortmund",a:"RB Leipzig",k:"Sat 12:30pm",p:[47,24,29],s:[2,1],why:["Dortmund have won 8 of 10 at home","Leipzig have 6 goals from 3.1 expected goals, so they're overperforming","Both teams played in Europe on Wednesday"],fh:"LWWWD",fa:"WWWDL"},
+ {id:12,lg:"L1",h:"Monaco",a:"Lille",k:"Sat 11:00am",p:[45,27,28],s:[2,1],why:["Monaco average 2.0 goals at home","Lille have kept 3 clean sheets in a row","Monaco's striker returns from injury"],fh:"WDWWW",fa:"DWWWD"},
+ {id:13,lg:"L1",h:"Lyon",a:"PSG",k:"Sun 2:45pm",p:[22,23,55],s:[1,2],edge:"Upset watch",why:["PSG rotate heavily before Champions League weeks","Lyon create 1.9 expected goals a game at home","PSG have dropped points in 2 of their last 4 away"],fh:"WWLDW",fa:"WWWDW"},
+ /* results */
+ {id:21,lg:"PL",ft:[1,1],h:"Arsenal",a:"Chelsea",k:"Last Sun, full time",p:[40,31,29],s:[1,1],
+  st:{poss:[58,42],xg:[1.6,1.1],shots:[15,9],sot:[5,3],corners:[7,3],pass:[88,83]},ev:[[23,"a","Palmer"],[67,"h","Saka"]],
+  lu:{h:["4-3-3",["Raya","White","Saliba","Gabriel","Calafiori","Ødegaard","Rice","Zubimendi","Saka","Gyökeres","Martinelli"]],a:["4-2-3-1",["Sánchez","James","Fofana","Colwill","Cucurella","Caicedo","Fernández","Estêvão","Palmer","Neto","João Pedro"]]}},
+ {id:22,lg:"LL",ft:[2,2],h:"Barcelona",a:"Atlético",k:"Last Sat, full time",p:[55,24,21],s:[2,1],
+  st:{poss:[63,37],xg:[2.3,1.4],shots:[18,8],sot:[7,4],corners:[8,2],pass:[90,79]},ev:[[12,"h","Yamal"],[38,"a","Álvarez"],[55,"a","Griezmann"],[81,"h","Lewandowski"]],
+  lu:{h:["4-3-3",["García","Koundé","Cubarsí","Araujo","Balde","Pedri","De Jong","Fermín","Yamal","Lewandowski","Raphinha"]],a:["4-4-2",["Oblak","Llorente","Le Normand","Giménez","Hancko","Simeone","Koke","Barrios","Baena","Griezmann","Álvarez"]]}},
+ {id:23,lg:"SA",ft:[2,0],h:"Inter",a:"Napoli",k:"Last Sun, full time",p:[46,29,25],s:[1,0],
+  st:{poss:[52,48],xg:[1.9,0.7],shots:[14,10],sot:[6,2],corners:[5,6],pass:[87,85]},ev:[[34,"h","Martínez"],[71,"h","Thuram"]],
+  lu:{h:["3-5-2",["Sommer","Pavard","Acerbi","Bastoni","Dumfries","Barella","Çalhanoğlu","Mkhitaryan","Dimarco","Thuram","Martínez"]],a:["4-3-3",["Meret","Di Lorenzo","Rrahmani","Buongiorno","Olivera","Anguissa","Lobotka","McTominay","Politano","Højlund","De Bruyne"]]}},
+ {id:24,lg:"BL",ft:[3,1],h:"Bayern",a:"Dortmund",k:"Last Sat, full time",p:[64,19,17],s:[3,1],
+  st:{poss:[61,39],xg:[2.9,1.2],shots:[21,10],sot:[9,3],corners:[9,4],pass:[89,81]},ev:[[9,"h","Kane"],[30,"a","Guirassy"],[58,"h","Olise"],[88,"h","Kane"]],
+  lu:{h:["4-2-3-1",["Neuer","Laimer","Upamecano","Tah","Stanišić","Kimmich","Goretzka","Olise","Musiala","Díaz","Kane"]],a:["4-2-3-1",["Kobel","Ryerson","Anton","Schlotterbeck","Bensebaini","Nmecha","Gross","Adeyemi","Brandt","Beier","Guirassy"]]}},
+ {id:25,lg:"L1",ft:[2,1],h:"PSG",a:"Marseille",k:"Last Sun, full time",p:[62,21,17],s:[2,0],
+  st:{poss:[67,33],xg:[2.1,1.3],shots:[17,9],sot:[6,4],corners:[6,3],pass:[91,80]},ev:[[17,"h","Dembélé"],[49,"a","Greenwood"],[76,"h","Doué"]],
+  lu:{h:["4-3-3",["Chevalier","Hakimi","Marquinhos","Pacho","Mendes","Neves","Vitinha","Zaïre-Emery","Doué","Dembélé","Kvaratskhelia"]],a:["4-3-3",["Rulli","Weah","Balerdi","Aguerd","Emerson","Højbjerg","O'Riley","Kondogbia","Greenwood","Aubameyang","Paixão"]]}}
+];
+
+const KP={1:["B. Saka","E. Haaland"],2:["M. Salah","I. Thiago"],3:["I. Ndiaye","B. Mbeumo"],4:["C. Palmer","B. Guimarães"],5:["K. Mbappé","G. Moreno"],6:["N. Williams","L. Yamal"],7:["I. Romero","Antony"],8:["K. Yıldız","C. Pulisic"],9:["S. McTominay","N. Paz"],10:["P. Schick","D. Undav"],11:["S. Guirassy","C. Baumgartner"],12:["A. Golovin","H. Haraldsson"],13:["C. Tolisso","O. Dembélé"]};
+const EXTRA=[{n:"E. Haaland",c:"MCI",lg:"PL",pos:"FWD",proj:9.4},{n:"M. Salah",c:"LIV",lg:"PL",pos:"FWD",proj:8.6},{n:"F. Wirtz",c:"LIV",lg:"PL",pos:"MID",proj:7.2},{n:"V. van Dijk",c:"LIV",lg:"PL",pos:"DEF",proj:5.9},{n:"K. Mbappé",c:"RMA",lg:"LL",pos:"FWD",proj:9.1},{n:"Vinícius Jr",c:"RMA",lg:"LL",pos:"FWD",proj:8.0},{n:"J. Bellingham",c:"RMA",lg:"LL",pos:"MID",proj:7.6},{n:"R. Leão",c:"MIL",lg:"SA",pos:"FWD",proj:6.9},{n:"P. Schick",c:"B04",lg:"BL",pos:"FWD",proj:6.6},{n:"A. Golovin",c:"ASM",lg:"L1",pos:"MID",proj:6.1}];
+
+/* compare pool: per 90 minutes */
+const POOL=[
+ {n:"E. Haaland",c:"MCI",lg:"PL",g:"OUT",pts:7.4,goals:1.02,ast:.12,xg:.94,xa:.10,sh:4.1,kp:.8,drb:.6},
+ {n:"H. Kane",c:"BAY",lg:"BL",g:"OUT",pts:7.9,goals:.98,ast:.28,xg:.85,xa:.22,sh:4.4,kp:1.6,drb:.5},
+ {n:"K. Mbappé",c:"RMA",lg:"LL",g:"OUT",pts:7.1,goals:.88,ast:.20,xg:.80,xa:.18,sh:4.6,kp:1.5,drb:2.1},
+ {n:"O. Dembélé",c:"PSG",lg:"L1",g:"OUT",pts:7.2,goals:.70,ast:.38,xg:.61,xa:.33,sh:3.9,kp:2.6,drb:2.8},
+ {n:"M. Salah",c:"LIV",lg:"PL",g:"OUT",pts:7.0,goals:.66,ast:.40,xg:.60,xa:.35,sh:3.5,kp:2.3,drb:1.8},
+ {n:"M. Olise",c:"BAY",lg:"BL",g:"OUT",pts:6.9,goals:.45,ast:.52,xg:.36,xa:.44,sh:2.9,kp:3.1,drb:2.4},
+ {n:"L. Yamal",c:"BAR",lg:"LL",g:"OUT",pts:6.6,goals:.38,ast:.46,xg:.33,xa:.41,sh:3.0,kp:2.8,drb:4.6},
+ {n:"C. Palmer",c:"CHE",lg:"PL",g:"OUT",pts:6.4,goals:.55,ast:.36,xg:.48,xa:.30,sh:3.6,kp:2.5,drb:1.7},
+ {n:"B. Saka",c:"ARS",lg:"PL",g:"OUT",pts:6.3,goals:.48,ast:.41,xg:.44,xa:.37,sh:3.1,kp:2.6,drb:2.6},
+ {n:"L. Martínez",c:"INT",lg:"SA",g:"OUT",pts:6.0,goals:.62,ast:.21,xg:.58,xa:.16,sh:3.3,kp:1.2,drb:.9},
+ {n:"D. Raya",c:"ARS",lg:"PL",g:"GK",pts:4.9,sv:2.4,svp:74,cs:.45,prev:.18,dist:61},
+ {n:"J. Oblak",c:"ATM",lg:"LL",g:"GK",pts:4.8,sv:2.9,svp:76,cs:.40,prev:.25,dist:48},
+ {n:"Y. Sommer",c:"INT",lg:"SA",g:"GK",pts:4.6,sv:2.2,svp:72,cs:.48,prev:.05,dist:55},
+ {n:"G. Kobel",c:"BVB",lg:"BL",g:"GK",pts:4.2,sv:3.0,svp:73,cs:.33,prev:.12,dist:52}
+];
+const STATS={
+ OUT:{free:[["pts","Fantasy points a game",1],["goals","Goals",2],["ast","Assists",2]],
+      pro:[["xg","Expected goals",2],["xa","Expected assists",2],["sh","Shots",1],["kp","Chances created",1],["drb","Dribbles completed",1]]},
+ GK:{free:[["pts","Fantasy points a game",1],["sv","Saves",1],["cs","Clean sheets a game",2]],
+     pro:[["svp","Save percentage",0],["prev","Goals prevented",2],["dist","Long pass accuracy %",0]]}
+};
+
+const MULTI=[["D. Raya","ARS","PL"],["A. Hakimi","PSG","L1"],["W. Saliba","ARS","PL"],["A. Bastoni","INT","SA"],["J. Koundé","BAR","LL"],["Pedri","BAR","LL"],["C. Palmer","CHE","PL"],["M. Olise","BAY","BL"],["L. Yamal","BAR","LL"],["H. Kane","BAY","BL"],["E. Haaland","MCI","PL"]];
+const CAPS=[["H. Kane","BAY","BL","v Mainz (H)",9.1],["E. Haaland","MCI","PL","v Burnley (H)",8.4],["K. Mbappé","RMA","LL","v Villarreal (H)",8.0],["O. Dembélé","PSG","L1","at Lyon",6.8],["L. Martínez","INT","SA","v Lecce (H)",6.5],["M. Salah","LIV","PL","v Brentford (H)",7.1]];
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const hash=s=>{let x=7;for(const ch of s)x=(x*31+ch.codePointAt(0))%10007;return x};
+const surname=n=>/^[A-Z]\. /.test(n)?n.slice(3):n;
+const short=t=>({Arsenal:"ARS",Chelsea:"CHE",Barcelona:"BAR","Atlético":"ATM",Inter:"INT",Napoli:"NAP",Bayern:"BAY",Dortmund:"BVB",PSG:"PSG",Marseille:"OM"})[t]||t.slice(0,3).toUpperCase();
+const rClass=r=>r>=8?"r8":r>=7?"r7":r<6.5?"r6":"";
+const verdict=f=>{const res=(a,b)=>Math.sign(a-b);if(f.s[0]===f.ft[0]&&f.s[1]===f.ft[1])return["Exact score","v-exact"];return res(...f.s)===res(...f.ft)?["Right result","v-hit"]:["Missed","v-miss"]};
+function rows(form){return [1,...form.split("-").map(Number)]}
+function players(f){
+  const out=[];["h","a"].forEach(side=>{const [form,xi]=f.lu[side];let i=0;rows(form).forEach((n,r,arr)=>{for(let k=0;k<n;k++){const name=xi[i++];
+    const pos=r===0?"GK":r===1?"DEF":r===arr.length-1?"FWD":"MID";
+    const goals=f.ev.filter(e=>e[1]===side&&e[2]===name).length;
+    const conceded=side==="h"?f.ft[1]:f.ft[0];
+    let rt=6.1+(hash(name)%17)/10+goals*0.9+((pos==="GK"||pos==="DEF")&&conceded===0?0.5:0);
+    out.push({n:name,side,team:side==="h"?f.h:f.a,pos,row:r,k,cnt:n,rows:arr.length,goals,rt:Math.min(9.6,Math.round(rt*10)/10)})}})});
+  return out;
+}
+let tt;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),1900)}
+
+const PITCH_LINES=`<svg class="lines" viewBox="0 0 68 100" preserveAspectRatio="none" aria-hidden="true" fill="none" stroke="rgba(255,255,255,.45)" stroke-width=".4">
+<rect x="2" y="2" width="64" height="96"/><line x1="2" y1="50" x2="66" y2="50"/><circle cx="34" cy="50" r="8"/>
+<rect x="15" y="2" width="38" height="15"/><rect x="25" y="2" width="18" height="5"/><rect x="15" y="83" width="38" height="15"/><rect x="25" y="93" width="18" height="5"/></svg>`;
+const HALF_LINES=`<svg class="lines" viewBox="0 0 68 78" preserveAspectRatio="none" aria-hidden="true" fill="none" stroke="rgba(255,255,255,.45)" stroke-width=".4">
+<rect x="2" y="2" width="64" height="74"/><path d="M26 2a8 8 0 0 0 16 0"/><rect x="15" y="61" width="38" height="15"/><rect x="25" y="71" width="18" height="5"/></svg>`;
+
+function marker(x,y,c,num,w,tag,tagCls,name,hi){
+  return `<div class="mk" style="left:${x}%;top:${y}%"><div class="sh2 ${hi?"hi":""}">${shirtSVG(c[0],c[1],num,w)}${tag?`<span class="tg ${tagCls||""}">${tag}</span>`:""}</div><span class="nm">${name}</span></div>`;
+}
+
+/* ---------- state ---------- */
+let league="PL",mdView="up",cur=0,mode="multi",fv="squad",cmpA=0,cmpB=1,dTab="stats",openId=null;
+const picks={};FX.filter(f=>!f.ft).forEach(f=>picks[f.id]={h:0,a:0,locked:false});
+picks[1]={h:2,a:1,locked:true};
+
+/* ---------- league chips ---------- */
+function renderChips(){
+  $$(".lgchips").forEach(box=>{box.innerHTML=Object.entries(LG).map(([k,v])=>`<button class="chip" aria-pressed="${k===league}" data-lg="${k}">${v}</button>`).join("")});
+  $$(".lgchips .chip").forEach(c=>c.onclick=()=>{league=c.dataset.lg;cur=0;if(mode==="single"){D=null;dBusy=false}renderAll()});
+}
+
+/* ---------- matchday ---------- */
+const chev='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>';
+const arrow='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg>';
+function stripHTML(f){return `<div class="strip" role="img" aria-label="${f.h} win ${f.p[0]}%, draw ${f.p[1]}%, ${f.a} win ${f.p[2]}%"><i class="h" style="width:${f.p[0]}%"></i><i class="d" style="width:${f.p[1]}%"></i><i class="a" style="width:${f.p[2]}%"></i></div>
+<div class="pcts"><span>${f.p[0]}%<em>Home</em></span><span>${f.p[1]}%<em>Draw</em></span><span>${f.p[2]}%<em>Away</em></span></div>`}
+function renderMatchday(){
+  const up=FX.filter(f=>f.lg===league&&!f.ft),ft=FX.filter(f=>f.lg===league&&f.ft);
+  $("#mdSub").textContent=`${LG[league]}, picks lock 90 minutes before kick-off`;
+  const done=up.filter(f=>picks[f.id].locked).length;
+  $("#mdSlip").innerHTML=mdView==="up"?`<div class="slip"><div><b>${done} of ${up.length}</b><span>${LG[league]} predictions made</span></div><button data-go="predict">${done===up.length?"Review picks":"Finish picks"}</button></div>`:"";
+  let html="";
+  if(mdView==="up"){
+    up.forEach((f,i)=>{
+      html+=`<article class="fx"><div class="fx-head"><span>${f.k}</span>${f.edge?`<span class="edge">${f.edge}</span>`:"<span>Model pick</span>"}</div>
+      <button class="teams kit" data-open="${f.id}" aria-label="Open ${f.h} v ${f.a}. ${f.h} ${f.p[0]}% to win, ${f.a} ${f.p[2]}%">${shirt(f.h,f.p[0],50)}<span class="team">${f.h}</span><span class="score">${f.s[0]}:${f.s[1]}<small>most likely</small></span><span class="team away">${f.a}</span>${shirt(f.a,f.p[2],50)}</button>
+      ${stripHTML(f)}
+      <div class="fx-foot"><button class="why-btn" aria-expanded="false" aria-controls="why${f.id}">Why the model thinks this ${chev}</button><button class="open-btn" data-open="${f.id}">Preview ${arrow}</button></div>
+      <div class="why" id="why${f.id}"><div><ul>${f.why.map(w=>`<li>${w}</li>`).join("")}</ul></div></div></article>`;
+      if(i===1&&!pro)html+=`<div class="adslot"><div><b>Ad slot</b>One ad per screen in the free app</div><button data-upgrade="Remove ads and unlock everything else.">Remove with Pro</button></div>`;
+    });
+  }else{
+    ft.forEach(f=>{const v=verdict(f),pl=players(f),top=[...pl].sort((a,b)=>b.rt-a.rt)[0];
+      html+=`<article class="fx"><div class="fx-head"><span>${f.k}</span><span class="verdict ${v[1]}">Model: ${v[0]}</span></div>
+      <button class="teams kit" data-open="${f.id}" aria-label="Open ${f.h} ${f.ft[0]} ${f.a} ${f.ft[1]}">${shirt(f.h,f.ft[0],50)}<span class="team">${f.h}</span><span class="score">FT<small>full time</small></span><span class="team away">${f.a}</span>${shirt(f.a,f.ft[1],50)}</button>
+      <div class="fx-foot"><span class="motm">Top rated: <b>${top.n}</b> ${top.rt}</span><button class="open-btn" data-open="${f.id}">Stats and ratings ${arrow}</button></div></article>`});
+    html+=`<p class="caption">Earlier results are in each team's page.</p>`;
+  }
+  $("#fixtures").innerHTML=html;
+  $$("#fixtures .why-btn").forEach(b=>b.onclick=()=>{const o=b.getAttribute("aria-expanded")!=="true";b.setAttribute("aria-expanded",o);$("#"+b.getAttribute("aria-controls")).classList.toggle("open",o)});
+  bindCommon($("#p-matchday"));
+}
+
+/* ---------- match centre ---------- */
+function openMatch(id){openId=id;const f=FX.find(x=>x.id===id);dTab=f.ft?"stats":"preview";renderDetail();
+  const d=$("#detail");d.classList.add("open");d.setAttribute("aria-hidden","false");$("#dBody").scrollTop=0;setTimeout(()=>$("#backBtn").focus(),50)}
+function closeMatch(){const d=$("#detail");d.classList.remove("open");d.setAttribute("aria-hidden","true")}
+const FORMS="WWDLW";
+const genForm=n=>[0,1,2,3,4].map(i=>"WWWDDL"[hash(n+i)%6]).join("");
+function h2h(f){const out=[],dates=["Apr 2026","Dec 2025","Mar 2025","Oct 2024","Feb 2024"];
+  for(let i=0;i<5;i++){const x=hash(f.h+f.a+i);out.push([dates[i],x%4,(x>>3)%3])}return out}
+function keyPlayers(f){
+  if(KP[f.id])return KP[f.id];
+  const pl=players(f);const best=side=>pl.filter(p=>p.side===side&&p.pos!=="GK"&&p.pos!=="DEF").sort((a,b)=>hash(b.n)-hash(a.n))[0].n;
+  return[best("h"),best("a")];
+}
+/* Poisson: find the expected goals that reproduce the model's win/draw/loss split, then show every scoreline */
+const pois=(k,l)=>{let f=1;for(let i=2;i<=k;i++)f*=i;return Math.exp(-l)*Math.pow(l,k)/f};
+function poissonFit(p){let best=[1.3,1.1],err=1e9;for(let lh=.3;lh<=3.2;lh+=.05)for(let la=.2;la<=3;la+=.05){let H=0,D=0,A=0;for(let i=0;i<=9;i++)for(let j=0;j<=9;j++){const q=pois(i,lh)*pois(j,la);if(i>j)H+=q;else if(i===j)D+=q;else A+=q}
+  const e=(H*100-p[0])**2+(D*100-p[1])**2+(A*100-p[2])**2;if(e<err){err=e;best=[lh,la]}}return best}
+const FITS={};
+function scorelineHTML(f){
+  if(!pro)return `<div class="locked" style="margin:0 0 12px"><div class="blur" aria-hidden="true"><div class="sec" style="margin-top:0">Scoreline chances</div><div class="grid5">${"<div class='c' style='background:#DCE7DF'>12%</div>".repeat(25)}</div></div>
+    <div class="lockover"><p>See the chance of every scoreline and each side's expected goals</p><button class="btn-flag" data-upgrade="See the chance of every scoreline.">Unlock with Pro</button></div></div>`;
+  const [lh,la]=FITS[f.id]||(FITS[f.id]=poissonFit(f.p));
+  const cell=(i,j)=>pois(i,lh)*pois(j,la),mx=cell(...[[0,0],[1,0],[1,1],[2,1],[0,1]].reduce((b,c)=>cell(...c)>cell(...b)?c:b));
+  let g=`<div class="hd">${f.h.slice(0,3)}</div>`+[0,1,2,3,4].map(j=>`<div class="hd">${j}</div>`).join("");
+  const all=[];for(let i=0;i<5;i++){g+=`<div class="hd">${i}</div>`;for(let j=0;j<5;j++){const q=cell(i,j);all.push([q,i,j]);const t=Math.min(1,q/0.15);
+    g+=`<div class="c" style="background:${i>j?`rgba(14,107,58,${.12+t*.75})`:i===j?`rgba(157,184,166,${.2+t*.8})`:`rgba(16,36,26,${.1+t*.75})`};color:${t>.5?"#fff":"#10241A"}">${Math.round(q*100)}</div>`}}
+  const top=all.sort((a,b)=>b[0]-a[0]).slice(0,4);
+  return `<div class="card"><h4>Scoreline chances <span class="verdict v-exact">Pro</span></h4>
+  <p style="font-size:12.5px;color:var(--muted);line-height:1.45">Expected goals: <b style="color:var(--ink)">${f.h} ${lh.toFixed(2)}</b>, <b style="color:var(--ink)">${f.a} ${la.toFixed(2)}</b>. Rows are ${f.h} goals, columns ${f.a} goals, values in %.</p>
+  <div class="grid5">${g}</div><div class="toplines">${top.map(t=>`<span><b>${t[1]}:${t[2]}</b>${Math.round(t[0]*100)}%</span>`).join("")}</div></div>`;
+}
+function previewHTML(f){
+  const fr=s=>`<span class="form">${[...s].map(c=>`<i class="f${c}">${c}</i>`).join("")}</span>`;
+  const H=h2h(f),hw=H.filter(m=>m[1]>m[2]).length,dr=H.filter(m=>m[1]===m[2]).length,aw=5-hw-dr;
+  const kp=keyPlayers(f),line=n=>`${3+hash(n)%6} goal involvements in the last 5 games`;
+  const news=t=>{const x=hash(t+"news");const out=x%3,dbt=(x>>2)%3;return out||dbt?`${out?out+" out":""}${out&&dbt?", ":""}${dbt?dbt+" doubtful":""}`:"Full squad available"};
+  let h=`<div class="card"><h4>Model odds <span>Most likely ${f.s.join(":")}</span></h4>${stripHTML(f)}
+  <ul style="list-style:none;margin-top:10px">${(f.why||[`${f.h} had ${f.st?f.st.xg[0]:"1.5"} expected goals a game at home coming in`,`${f.a} had won ${2+hash(f.a)%3} of their last 5 away`,"Neither side had a midweek game"]).map(w=>`<li style="font-size:13px;line-height:1.45;padding:6px 0;border-top:1px solid var(--line)">${w}</li>`).join("")}</ul></div>`;
+  h+=`<button class="linkbtn" data-how style="margin:-4px 0 10px">How this is calculated</button>`;
+  h+=scorelineHTML(f);
+  if(f.ft){const v=verdict(f);h+=`<div class="card"><h4>How the model did <span class="verdict ${v[1]}">${v[0]}</span></h4><p style="font-size:13.5px;line-height:1.5">Predicted ${f.s.join(":")}. Finished ${f.ft.join(":")}.</p></div>`}
+  h+=`<div class="card"><h4>Form <span>Last 5, most recent on the right</span></h4><div class="formrow"><span>${f.h}</span>${fr(f.fh||genForm(f.h))}</div><div class="formrow"><span>${f.a}</span>${fr(f.fa||genForm(f.a))}</div></div>`;
+  h+=`<div class="card"><h4>Head to head <span>Last 5 meetings</span></h4>
+   <div class="h2hsum"><div><b style="color:var(--pitch)">${hw}</b><span>${f.h} wins</span></div><div><b style="color:var(--muted)">${dr}</b><span>Draws</span></div><div><b>${aw}</b><span>${f.a} wins</span></div></div>
+   <ul class="h2hlist">${H.map(m=>`<li><span>${m[0]}</span><span>${f.h} ${m[1]} : ${m[2]} ${f.a}</span></li>`).join("")}</ul></div>`;
+  h+=`<div class="card"><h4>Players to watch <span>Fantasy picks</span></h4><div class="watch">
+   <div style="--c:${color(f.h)[0]}"><b>${kp[0]}</b><span>${line(kp[0])}</span></div>
+   <div style="--c:${color(f.a)[0]}"><b>${kp[1]}</b><span>${line(kp[1])}</span></div></div></div>`;
+  h+=`<div class="card"><h4>Team news <span>${f.ft?"Before kick-off":"Updated daily"}</span></h4><ul class="news"><li><em>${f.h}</em><span>${news(f.h)}</span></li><li><em>${f.a}</em><span>${news(f.a)}</span></li></ul></div>`;
+  if(!f.ft)h+=`<div class="btnrow"><button class="primary" data-predict="${f.id}">Predict this match</button><button class="ghost" data-toast="Opens a ticket partner (affiliate link)">Find tickets</button></div>
+   <button class="ghost" style="width:100%;margin-top:10px" data-toast="Opens the official shirt store (affiliate link)">Shop ${f.h} shirts</button>`;
+  return h;
+}
+function renderDetail(){
+  const f=FX.find(x=>x.id===openId);$("#dLg").textContent=LG[f.lg];
+  const scorers=side=>f.ft?f.ev.filter(e=>e[1]===side).map(e=>`${e[2]} ${e[0]}'`).join("<br>")||"&nbsp;":"";
+  let h=`<div class="board"><div class="fx-head" style="position:relative;z-index:1"><span>${f.k}</span>${f.ft?`<span class="verdict ${verdict(f)[1]}">Model: ${verdict(f)[0]}</span>`:(f.edge?`<span class="edge">${f.edge}</span>`:"")}</div>
+  <div class="kitduel"><div>${shirt(f.h,f.ft?f.ft[0]:f.p[0],92,"",f.ft?f.h+" "+f.ft[0]:f.h+" "+f.p[0]+"% to win")}<span class="team">${f.h}</span></div><span class="score">${f.ft?"FT":f.s.join(":")}<small>${f.ft?"full time, goals on shirts":"model score; shirts show win chance %"}</small></span><div>${shirt(f.a,f.ft?f.ft[1]:f.p[2],92,"",f.ft?f.a+" "+f.ft[1]:f.a+" "+f.p[2]+"% to win")}<span class="team">${f.a}</span></div></div>
+  ${f.ft?`<div class="scorers"><div>${scorers("h")}</div><div>${scorers("a")}</div></div>`:""}</div>`;
+  const tabs=f.ft?[["preview","Preview"],["stats","Stats"],["ratings","Ratings"],["lineups","Lineups"]]:[["preview","Preview"],["lineups","Lineups"]];
+  h+=`<div class="seg" role="group" aria-label="Match section">${tabs.map(([k,v])=>`<button aria-pressed="${dTab===k}" data-dt="${k}">${v}</button>`).join("")}</div>`;
+  if(dTab==="preview")h+=previewHTML(f);
+  else if(dTab==="stats"){
+    const S=[["poss","Possession","%"],["xg","Expected goals",""],["shots","Shots",""],["sot","On target",""],["corners","Corners",""],["pass","Pass accuracy","%"]];
+    h+=`<div class="card">`+S.map(([k,l,u])=>{const [a,b]=f.st[k],m=Math.max(a,b)||1;
+      return `<div class="srow"><div class="lbl"><b class="${a>b?"w":""}">${a}${u}</b><span>${l}</span><b class="${b>a?"w":""}">${b}${u}</b></div>
+      <div class="twin"><i style="--w:${a/m*100}%;--c:${a>=b?"var(--pitch)":"var(--draw)"}"></i><i style="--w:${b/m*100}%;--c:${b>=a?"var(--ink)":"var(--draw)"}"></i></div></div>`}).join("")+`</div>`;
+  }else if(dTab==="ratings"){
+    const pl=players(f).sort((a,b)=>b.rt-a.rt);
+    h+=`<div class="card"><h4>Player ratings <span>Out of 10</span></h4><ul class="rlist">${pl.map((p,i)=>`<li><span class="cd">${shirt(p.team,"",22)}</span><span>${p.n}<small>${short(p.team)}, ${p.pos}</small>${i===0?'<span class="tagm">Top rated</span>':""}</span><span class="rt ${rClass(p.rt)}">${p.rt.toFixed(1)}</span></li>`).join("")}</ul></div>`;
+  }else if(f.ft){
+    const pl=players(f);
+    const mk=pl.map(p=>{const x=(p.k+1)/(p.cnt+1)*100,step=41/(p.rows-1);
+      const y=p.side==="h"?95-p.row*step:5+p.row*step;
+      return marker(p.side==="h"?x:100-x,y,color(p.team),p.rt.toFixed(1),34,p.goals?(p.goals>1?p.goals+" goals":"Goal"):"",p.goals?"tgy":"",p.n,p.rt>=8)}).join("");
+    h+=`<div class="pitch">${PITCH_LINES}${mk}</div><div class="pitch-key"><span>${f.a} ${f.lu.a[0]} (top)</span><span>${f.h} ${f.lu.h[0]} (bottom)</span><span>Shirt number: rating out of 10</span><span>Gold ring: 8.0 or higher</span></div>`;
+  }else{
+    h+=`<div class="card"><h4>Confirmed lineups <span>Free</span></h4><p style="font-size:13.5px;color:var(--muted);line-height:1.5">Both lineups appear here on the pitch an hour before kick-off, with each player's fantasy projection in the corner.</p></div>
+    ${pro?`<div class="card"><h4>Predicted XI <span class="verdict v-exact">Pro</span></h4><p style="font-size:13.5px;line-height:1.5;color:var(--muted)">The model's predicted lineups for ${f.h} and ${f.a} publish 48 hours before kick-off, with a projected rating on every shirt.</p><button class="ghost" style="width:100%;margin-top:10px" data-toast="You'll get an alert when the predicted XI is ready">Alert me when it's ready</button></div>`:`<div class="locked" style="margin-top:0"><div class="blur" aria-hidden="true"><div class="sec" style="margin-top:0">Predicted XI</div><div class="pitch half" style="aspect-ratio:68/40">${HALF_LINES}</div></div>
+    <div class="lockover"><p>See the model's predicted XI two days before kick-off</p><button class="btn-flag" data-upgrade="See predicted lineups two days early.">Unlock with Pro</button></div></div>`}`;
+  }
+  $("#dBody").innerHTML=h;
+  $$("#dBody [data-dt]").forEach(b=>b.onclick=()=>{dTab=b.dataset.dt;renderDetail();$("#dBody").scrollTop=0});
+  $$("#dBody [data-predict]").forEach(b=>b.onclick=()=>{const id=+b.dataset.predict;league=f.lg;const list=FX.filter(x=>x.lg===league&&!x.ft);cur=list.findIndex(x=>x.id===id);closeMatch();go("predict")});
+  bindCommon($("#dBody"));
+}
+
+/* ---------- predict ---------- */
+function predList(){return FX.filter(f=>f.lg===league&&!f.ft)}
+function renderPred(){
+  const list=predList();cur=Math.max(0,Math.min(cur,list.length-1));const f=list[cur],p=picks[f.id];
+  $("#pHome").textContent=f.h;$("#pAway").textContent=f.a;$("#pKick").textContent=f.k;$("#pEdge").textContent=f.edge||"";
+  $("#gH").innerHTML=shirt(f.h,p.h,104,"",f.h+" "+p.h+" goals");$("#gA").innerHTML=shirt(f.a,p.a,104,"",f.a+" "+p.a+" goals");$("#pModel").textContent=f.s.join(" : ");
+  $("#predSub").textContent=`${LG[league]}, match ${cur+1} of ${list.length}`;
+  $("#pagerTxt").textContent=`${list.filter(x=>picks[x.id].locked).length} locked`;
+  const lb=$("#lockBtn");lb.textContent=p.locked?"Locked. Tap to change":"Lock prediction";lb.classList.toggle("done",p.locked);
+  $("#prevBtn").disabled=cur===0;$("#nextBtn").disabled=cur===list.length-1;
+}
+$$("[data-g]").forEach(b=>b.onclick=()=>{const f=predList()[cur],p=picks[f.id],k=b.dataset.g;p[k]=Math.max(0,Math.min(9,p[k]+ +b.dataset.d));p.locked=false;renderPred()});
+$("#lockBtn").onclick=()=>{const list=predList(),p=picks[list[cur].id];if(p.locked){p.locked=false;renderPred();return}
+  p.locked=true;renderPred();toast("Prediction locked");if(cur<list.length-1)setTimeout(()=>{cur++;renderPred()},500)};
+$("#prevBtn").onclick=()=>{cur--;renderPred()};$("#nextBtn").onclick=()=>{cur++;renderPred()};
+
+/* ---------- leagues ---------- */
+let lt="pred";
+const TABLES={
+ pred:{cols:["MW6","Total"],rows:[["Dan R.",9,42,"▲1"],["You",11,40,"▲2",1],["The Model",6,39,"▼1",2],["Mike T.",4,35,"▼2"],["Jess P.",7,33,""],["Chris O.",3,28,"▼1"]],cap:"You're 1 point ahead of the model. Picks count from all 5 leagues."},
+ fan:{cols:["MW6","Total"],rows:[["Jess P.",71,402,"▲2"],["You",64,397,"",1],["Dan R.",58,391,"▼1"],["Chris O.",66,377,"▲1"],["Mike T.",49,360,"▼2"],["Sam K.",52,341,""]],cap:"Multi-league fantasy: squads can include players from all 5 leagues."},
+ cup:{cols:["Round 2",""],rows:[["You v Mike T.","64 : 49","Won",1],["Dan R. v Jess P.","58 : 71","Jess"],["Chris O. v Sam K.","66 : 52","Chris"]],cap:"Head-to-head cup comes with League Pass. Quarter-finals start next matchweek."}
+};
+function renderLeague(){
+  const t=TABLES[lt];
+  if(lt==="cup"){$("#leagueTable").innerHTML=`<table><thead><tr><th>Tie</th><th class="r">Score</th><th class="r">Through</th></tr></thead><tbody>${t.rows.map(r=>`<tr class="${r[3]?"me":""}"><td>${r[0]}</td><td class="n">${r[1]}</td><td style="text-align:right;font-weight:600">${r[2]}</td></tr>`).join("")}</tbody></table>`}
+  else $("#leagueTable").innerHTML=`<div class="backs">${t.rows.map((r,i)=>{const c=r[4]===2?["#F2C230","#10241A"]:r[4]===1?["#10241A","#FFFFFF"]:["#FFFFFF","#10241A"];const nm=r[4]===2?"MODEL":r[0].split(" ")[0].toUpperCase();
+    return `<div class="bk"><span class="bp">${i+1}${["st","nd","rd"][i]||"th"}</span>${shirtSVG(c[0],c[1],r[2],96,nm,r[0]+", "+(i+1)+" place, "+r[2]+" points")}<span class="bm">${r[1]} this week ${r[3]?`<b class="${r[3][0]==="▲"?"up":"dn"}">${r[3]}</b>`:""}</span></div>`}).join("")}</div>
+  <details class="tblx"><summary>Show as a table</summary><table><thead><tr><th></th><th>Player</th><th class="r">${t.cols[0]}</th><th class="r">${t.cols[1]}</th></tr></thead><tbody>${t.rows.map((r,i)=>`<tr class="${r[4]===1?"me":r[4]===2?"model":""}"><td class="pos">${i+1}</td><td>${r[0]}${r[4]===2?'<span class="tag">Bot</span>':""}${r[3]?`<span class="mv ${r[3][0]==="▲"?"up":"dn"}">${r[3]}</span>`:""}</td><td class="n">${r[1]}</td><td class="n">${r[2]}</td></tr>`).join("")}</tbody></table></details>`;
+  $("#leagueCap").textContent=t.cap;
+  $$("[data-lt]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lt===lt));
+}
+$$("[data-lt]").forEach(b=>b.onclick=()=>{lt=b.dataset.lt;renderLeague()});
+
+/* ---------- draft ---------- */
+let D=null,dPos="ALL",dLeft=60,dBusy=false;
+const clk=n=>Math.floor(n/60)+":"+String(Math.max(0,n)%60).padStart(2,"0");
+function draftCfg(){return mode==="multi"?{name:"Sunday Squad draft",mgr:["Dan R.","You","Jess P.","Mike T.","Chris O.","Sam K."],rounds:11,lim:{GK:1,DEF:4,MID:4,FWD:3}}
+  :{name:`${LG[league]} draft`,mgr:["Jess P.","You","Mike T.","Dan R."],rounds:5,lim:{GK:1,DEF:2,MID:2,FWD:2}}}
+function draftPool(){
+  const seen=new Set(),pool=[];
+  FX.filter(f=>f.ft&&(mode==="multi"||f.lg===league)).forEach(f=>players(f).forEach(p=>{if(seen.has(p.n))return;seen.add(p.n);
+    pool.push({n:p.n,c:short(p.team),lg:f.lg,pos:p.pos,proj:Math.round((2.8+(hash(p.n)%40)/10+(p.pos==="FWD"?1.4:p.pos==="MID"?.8:p.pos==="GK"?-.4:0))*10)/10})}));
+  EXTRA.filter(e=>(mode==="multi"||e.lg===league)&&!seen.has(e.n)).forEach(e=>pool.push({...e}));
+  return pool.sort((a,b)=>b.proj-a.proj);
+}
+function onClock(){const M=D.cfg.mgr.length,r=Math.floor(D.k/M),i=D.k%M;return r%2===0?i:M-1-i}
+function counts(m){const c={GK:0,DEF:0,MID:0,FWD:0};D.roster[m].forEach(p=>c[p.pos]++);return c}
+function doPick(m,p){D.pool=D.pool.filter(x=>x!==p);D.roster[m].push(p);D.log.push([D.k+1,D.cfg.mgr[m],p]);D.k++}
+function botPick(m){const c=counts(m);const p=D.pool.find(x=>c[x.pos]<D.cfg.lim[x.pos])||D.pool[0];doPick(m,p);return p}
+function draftDone(){return D.k>=D.cfg.mgr.length*D.cfg.rounds||!D.pool.length}
+function newDraft(){const cfg=draftCfg();D={cfg,pool:draftPool(),roster:cfg.mgr.map(()=>[]),log:[],k:0};dLeft=60;
+  /* earlier rounds already made: run until it's your second pick */
+  let mine=0;while(!draftDone()){const m=onClock();if(cfg.mgr[m]==="You"){if(mine===1)break;mine++}botPick(m)}}
+function runBots(){
+  if(draftDone()||D.cfg.mgr[onClock()]==="You"){dBusy=false;dLeft=60;if(fv==="draft")renderFantasy();return}
+  dBusy=true;const m=onClock(),p=botPick(m);toast(`${D.cfg.mgr[m]} drafted ${p.n}`);if(fv==="draft")renderFantasy();
+  setTimeout(runBots,matchMedia("(prefers-reduced-motion: reduce)").matches?150:700);
+}
+function draftHTML(){
+  if(!D)newDraft();
+  const M=D.cfg.mgr.length,total=M*D.cfg.rounds,me=D.cfg.mgr.indexOf("You"),c=counts(me);
+  if(draftDone()){
+    return `<div class="dclock"><div><small>${D.cfg.name}</small><b>Draft complete</b></div></div>
+    <div class="sec">Your squad <span>${D.roster[me].length} players</span></div>
+    <ul class="avail card">${D.roster[me].map((p,i)=>`<li><span class="rk">${i+1}</span><span class="pn">${p.n}<small>${p.c}, ${LG[p.lg]}</small></span><span class="ptag">${p.pos}</span><span class="pj">${p.proj}<small>proj</small></span></li>`).join("")}</ul>
+    <button class="ghost" style="width:100%" data-redraft="1">Start a mock draft</button>`;
+  }
+  const r=Math.floor(D.k/M)+1,pr=D.k%M+1,who=D.cfg.mgr[onClock()],mine=who==="You";
+  let h=`<div class="dclock"><div><small>${D.cfg.name}, round ${r} of ${D.cfg.rounds}, pick ${D.k+1} of ${total}</small><b>${mine?"You're on the clock":who+" is picking"}</b></div>
+   <div class="tm ${mine?"":"wait"}" id="dTimer">${mine?clk(dLeft):"..."}</div></div>`;
+  h+=`<div class="sec">Recent picks <span>Snake order reverses each round</span></div><div class="recent">${D.log.slice(-6).reverse().map(([n,m,p])=>`<div class="${m==="You"?"mine":""}"><small>#${n} ${m}</small><b>${p.n}</b><small>${p.pos}, ${p.c}</small></div>`).join("")}</div>`;
+  h+=`<div class="sec">Your roster <span>${D.roster[me].map(p=>p.n).join(", ")||"No players yet"}</span></div>
+   <div class="slots">${["GK","DEF","MID","FWD"].map(k=>`<div class="${c[k]>=D.cfg.lim[k]?"full":""}"><b>${c[k]}/${D.cfg.lim[k]}</b><span>${k}</span></div>`).join("")}</div>`;
+  h+=`<div class="sec">Best available <span>Ranked by model projection</span></div>
+   <div class="seg" role="group" aria-label="Position">${["ALL","GK","DEF","MID","FWD"].map(k=>`<button aria-pressed="${dPos===k}" data-dpos="${k}">${k==="ALL"?"All":k}</button>`).join("")}</div>`;
+  const list=D.pool.filter(p=>dPos==="ALL"||p.pos===dPos).slice(0,10);
+  h+=`<ul class="avail card">${list.map(p=>{const full=c[p.pos]>=D.cfg.lim[p.pos];return `<li><span class="rk">${D.pool.indexOf(p)+1}</span><span class="pn">${p.n}<span class="ptag">${p.pos}</span><small>${p.c}, ${LG[p.lg]}</small></span><span class="pj">${p.proj}<small>proj pts</small></span>
+    <button data-draft="${p.n}" ${!mine||full||dBusy?"disabled":""}>${full?"Full":"Draft"}</button></li>`}).join("")}</ul>`;
+  h+=`<p class="caption">Each player can only be on one team in this league. If the clock runs out, the top available player who fits your roster is picked for you.</p>
+   <div class="btnrow" style="margin-top:12px"><button class="ghost" data-toast="Draft board with every team's picks would open here">Full draft board</button><button class="ghost" ${pro?'data-redraft="1"':'data-upgrade="Run unlimited mock drafts against the model."'}>${pro?"New mock draft":"Mock draft (Pro)"}</button></div>`;
+  return h;
+}
+setInterval(()=>{
+  if(!D||fv!=="draft"||draftDone()||D.cfg.mgr[onClock()]!=="You"||!$("#p-fantasy").classList.contains("on"))return;
+  dLeft--;const t=$("#dTimer");if(t)t.textContent=clk(Math.max(0,dLeft));
+  if(dLeft<=0){const me=onClock(),p=botPick(me);toast(`Time's up: drafted ${p.n} for you`);renderFantasy();setTimeout(runBots,700)}
+},1000);
+
+/* ---------- fantasy ---------- */
+function squad(){
+  if(mode==="multi")return MULTI.map(([n,c,lg],i)=>({n,c,lg,pos:i===0?"GK":i<5?"DEF":i<8?"MID":"FWD"}));
+  const r=FX.find(f=>f.lg===league&&f.ft),pl=players(r);
+  const pick=(pos,side,cnt)=>pl.filter(p=>p.pos===pos&&p.side===side).slice(0,cnt);
+  const need={GK:1,DEF:4,MID:3,FWD:3},s=[];["GK","DEF","MID","FWD"].forEach(pos=>{const hs=pl.filter(p=>p.pos===pos&&p.side==="h"),as=pl.filter(p=>p.pos===pos&&p.side==="a");for(let i=0;s.filter(p=>p.pos===pos).length<need[pos]&&i<Math.max(hs.length,as.length);i++){if(hs[i]&&s.filter(p=>p.pos===pos).length<need[pos])s.push(hs[i]);if(as[i]&&s.filter(p=>p.pos===pos).length<need[pos])s.push(as[i])}});
+  return s.map(p=>({n:p.n,c:short(p.team),lg:league,pos:p.pos,team:p.team}));
+}
+function renderFantasy(){
+  $("#fanChips").hidden=mode!=="single";
+  $$("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===mode));
+  $$("[data-fv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.fv===fv));
+  $("#fanSub").textContent=mode==="multi"?"Multi-league, matchweek 7":`${LG[league]} only, matchweek 7`;
+  let h="";
+  if(fv==="squad"){
+    const sq=squad(),ptsOf=p=>2+hash(p.n)%10,capIdx=sq.reduce((b,p,i)=>ptsOf(p)>ptsOf(sq[b])?i:b,0);
+    const total=sq.reduce((s,p,i)=>s+ptsOf(p)*(i===capIdx?2:1),0);
+    const lgs=new Set(sq.map(p=>p.lg)).size;
+    h+=`<div class="fhead"><div><b>${total}</b><span>Matchweek points</span></div><div><b>${mode==="multi"?"8,214":"3,102"}</b><span>Overall rank</span></div><div><b>1.5m</b><span>Left in budget</span></div></div>`;
+    h+=`<div class="rulebar">${mode==="multi"?`<b>Multi-league rules:</b> at least 3 leagues and no more than 3 players from one club. Your squad uses ${lgs} leagues. The matchweek runs Friday to Monday across every league.`:`<b>Single-league rules:</b> every player comes from ${LG[league]}, and no more than 3 from one club.`}</div>`;
+    const R=[1,4,3,3];let i=0,mk="";
+    R.forEach((n,r)=>{for(let k=0;k<n;k++){const p=sq[i];const y=88-r*24,x=(k+1)/(n+1)*100;
+      const club=p.team?color(p.team):["#FFFFFF","#10241A"];const pts=ptsOf(p)*(i===capIdx?2:1);
+      mk+=marker(x,y,color(p.team||p.c),pts,40,i===capIdx?"C":(mode==="multi"?p.lg:""),i===capIdx?"tgy":"",surname(p.n),pts>=12);i++}});
+    h+=`<div class="pitch half">${HALF_LINES}${mk}</div><div class="pitch-key"><span>Shirt number: points</span><span>Tag: ${mode==="multi"?"league":"captain"}</span><span>C: captain, double points</span></div>`;
+    h+=`<div class="btnrow" style="margin-top:12px"><button class="ghost" data-toast="Transfer market would open here">Make transfers</button><button class="ghost" data-fvgo="compare">Compare players</button></div>`;
+  }else if(fv==="draft"){
+    h+=draftHTML();
+  }else if(fv==="compare"){
+    const pool=POOL.filter(p=>mode==="multi"||p.lg===league);
+    if(pool.length<2){h+=`<div class="card"><p style="font-size:13.5px;line-height:1.5">Not enough sample players in ${LG[league]} to compare yet. Switch to All 5 leagues to compare across competitions.</p></div>`}
+    else{
+      if(!pool[cmpA])cmpA=0;const A=pool[cmpA];const groupB=pool.filter(p=>p.g===A.g&&p!==A);
+      if(!groupB.find(p=>p.n===pool[cmpB]?.n))cmpB=pool.indexOf(groupB[0]);const B=pool[cmpB];
+      const opt=(list,sel)=>list.map(p=>`<option value="${pool.indexOf(p)}" ${pool.indexOf(p)===sel?"selected":""}>${p.n} (${p.c})</option>`).join("");
+      h+=`<div class="pickrow"><div class="a"><label for="cA">Player 1</label><select id="cA">${opt(pool,cmpA)}</select></div><div class="b"><label for="cB">Player 2</label><select id="cB">${opt(groupB,cmpB)}</select></div></div>
+      <p class="caption" style="margin:0 2px 10px">${A.g==="GK"?"Goalkeepers are compared on goalkeeping stats.":"Per 90 minutes this season."} ${A.lg!==B.lg?"These two play in different leagues.":""}</p>`;
+      const row=([k,l,d])=>{const a=A[k],b=B[k],m=Math.max(a,b)||1;
+        return `<div class="bf"><div class="l"><b class="${a>b?"w":""}">${a.toFixed(d)}</b><span>${l}</span><b class="${b>a?"w":""}">${b.toFixed(d)}</b></div>
+        <div class="twin"><i class="${a>=b?"wa":""}" style="--w:${a/m*100}%"></i><i class="${b>=a?"wb":""}" style="--w:${b/m*100}%"></i></div></div>`};
+      const S=STATS[A.g];
+      h+=`<div class="bfly" style="border-bottom-left-radius:0;border-bottom-right-radius:0">${S.free.map(row).join("")}</div>
+      ${pro?`<div class="bfly" style="border-top-left-radius:0;border-top-right-radius:0;margin-top:-1px;border-top:1px dashed var(--line)">${S.pro.map(row).join("")}</div>
+      <p class="caption">${A.lg!==B.lg?"Pro: figures are adjusted for league strength, so players in different leagues compare fairly.":"Pro: full per-90 breakdown."}</p>
+      <div class="card" style="margin-top:12px"><h4>Compare more <span class="verdict v-exact">Pro</span></h4><p style="font-size:13px;color:var(--muted);line-height:1.5">Add up to 4 players, view form over the last 5 games, or share a radar chart.</p><div class="btnrow" style="margin-top:10px"><button class="ghost" data-toast="Player picker would open here">Add a player</button><button class="ghost" data-toast="Radar chart image saved">Share radar</button></div></div>`
+      :`<div class="lockwrap"><div class="bfly">${S.pro.map(row).join("")}</div>
+      <div class="lockover"><p>${A.lg!==B.lg?"See the full breakdown, adjusted for league strength":"See the full per-90 breakdown"}</p><button class="btn-flag" data-upgrade="See every stat, adjusted for league strength.">Unlock with Pro</button></div></div>
+      <div class="card" style="margin-top:12px"><h4>Also in Pro <span></span></h4><p style="font-size:13px;color:var(--muted);line-height:1.5">Compare up to 4 players at once, see form over the last 5 games, and get a radar chart you can share.</p></div>`}`;
+    }
+  }else{
+    const list=CAPS.filter(c=>mode==="multi"||c[2]===league).sort((a,b)=>b[4]-a[4]);
+    h+=`<div class="sec" style="margin-top:4px">Captain shortlist <span>Expected points</span></div>`;
+    h+=list.length?list.map((c,i)=>`<div class="cap ${i===0?"top1":""}"><div class="who">${c[0]}<small>${c[1]} ${c[3]}</small></div><div class="bar"><i style="width:${c[4]/10*100}%"></i></div><b>${c[4]}</b></div>`).join(""):`<p class="caption">No sample captain picks for ${LG[league]} yet.</p>`;
+    const planner=`<div class="sec" style="margin-top:0">Chip planner</div>
+      <div class="cap"><div class="who">Wildcard</div><div class="bar"><i style="width:70%"></i></div><b>MW9</b></div>
+      <div class="cap"><div class="who">Bench Boost</div><div class="bar"><i style="width:45%"></i></div><b>MW14</b></div>
+      <div class="cap"><div class="who">Triple Captain</div><div class="bar"><i style="width:60%"></i></div><b>MW11</b></div>
+      <div class="sec">Best transfers, next 5 weeks</div><div class="cap"><div class="who">Kane for Haaland</div><div class="bar"><i style="width:55%"></i></div><b>+4.1</b></div>`;
+    h+=pro?`<div class="card" style="margin-top:14px">${planner}<p class="caption" style="color:var(--muted)">Best gameweek for each chip, based on fixture difficulty across all 5 leagues.</p></div>`
+      :`<div class="locked"><div class="blur" aria-hidden="true">${planner}</div>
+      <div class="lockover"><p>Plan chips and transfers 5 matchweeks ahead, across all 5 leagues</p><button class="btn-flag" data-upgrade="Plan chips and transfers five weeks ahead.">Unlock with Pro</button></div></div>`;
+  }
+  $("#fanBody").innerHTML=h;
+  const a=$("#cA"),b=$("#cB");
+  if(a)a.onchange=()=>{cmpA=+a.value;cmpB=-1;renderFantasy()};
+  if(b)b.onchange=()=>{cmpB=+b.value;renderFantasy()};
+  $$("#fanBody [data-dpos]").forEach(x=>x.onclick=()=>{dPos=x.dataset.dpos;renderFantasy()});
+  $$("#fanBody [data-draft]").forEach(x=>x.onclick=()=>{const p=D.pool.find(q=>q.n===x.dataset.draft);doPick(onClock(),p);toast(`You drafted ${p.n}`);dBusy=true;renderFantasy();setTimeout(runBots,700)});
+  $$("#fanBody [data-redraft]").forEach(x=>x.onclick=()=>{if(!pro){openPaywall("Run unlimited mock drafts against the model.");return}toast("Mock draft started against the model");D=null;dBusy=false;renderFantasy()});
+  $$("#fanBody [data-fvgo]").forEach(x=>x.onclick=()=>{fv=x.dataset.fvgo;renderFantasy();$("#view").scrollTop=0});
+  bindCommon($("#fanBody"));
+}
+$$("[data-mode]").forEach(b=>b.onclick=()=>{mode=b.dataset.mode;cmpA=0;cmpB=1;D=null;dBusy=false;renderFantasy()});
+$$("[data-fv]").forEach(b=>b.onclick=()=>{fv=b.dataset.fv;renderFantasy()});
+$$("[data-md]").forEach(b=>b.onclick=()=>{mdView=b.dataset.md;$$("[data-md]").forEach(x=>x.setAttribute("aria-pressed",x===b));renderMatchday()});
+
+/* ---------- record ---------- */
+const cal=[[20,22],[35,33],[50,53],[65,61],[80,77]];
+$("#calibBars").innerHTML=cal.map((c,i)=>{const x=44+i*56;return `<rect x="${x}" y="${120-c[0]}" width="18" height="${c[0]}" rx="3" fill="#0E6B3A"/><rect x="${x+20}" y="${120-c[1]}" width="18" height="${c[1]}" rx="3" fill="#F2C230"/><text x="${x+19}" y="136" text-anchor="middle" font-family="Inter" font-size="10" fill="#5B6E62">${c[0]}%</text>`}).join("")+`<text x="172" y="149" text-anchor="middle" font-family="Inter" font-size="10" fill="#5B6E62">Model's win chance</text>`;
+$("#ledger").innerHTML=FX.filter(f=>f.ft).map(f=>{const v=verdict(f);return `<li><button data-open="${f.id}" style="text-align:left;flex:1">${f.h} ${f.ft[0]} : ${f.ft[1]} ${f.a}<small>${LG[f.lg]}, model said ${f.s.join(":")}</small></button><span class="verdict ${v[1]}">${v[0]}</span></li>`}).join("");
+
+/* ---------- shared ---------- */
+let pro=false,plan="year";
+function openPaywall(reason){$("#pwReason").textContent=reason||"Everything in the free app, plus the deep stuff.";$("#paywall").hidden=false;setTimeout(()=>$("#pwGo").focus(),50)}
+function setPro(v){pro=v;
+  $$(".demo-toggle [data-demo]").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.demo==="pro")===v));
+  $$(".top .pill").forEach(pl=>{if(!pl.dataset.orig)pl.dataset.orig=pl.textContent;if(pl.dataset.orig==="Sample"){pl.textContent=v?"Pro":"Sample";pl.classList.toggle("pro",v)}});
+  const pc=$("#proCard");if(!pc.dataset.freeHtml)pc.dataset.freeHtml=pc.innerHTML;
+  pc.innerHTML=v?`<h4>You're on <span>Pro</span></h4><ul><li>Everything is unlocked across all five leagues</li><li>Trial ends in 7 days, then ${plan==="year"?"$19.99 a year":"$2.99 a month"}</li></ul><button class="btn-flag" data-demo-free>Switch back to free (demo)</button><small>Manage your plan in Settings.</small>`:pc.dataset.freeHtml;
+  renderAll();if($("#detail").classList.contains("open"))renderDetail()}
+document.addEventListener("click",e=>{
+  const u=e.target.closest("[data-upgrade]");if(u){e.preventDefault();if(!pro)openPaywall(u.dataset.upgrade);return}
+  if(e.target.closest("[data-how]")){$("#howSheet").hidden=false;return}
+  if(e.target.closest("[data-close]")||e.target.classList.contains("overlay")){$$(".overlay").forEach(o=>o.hidden=true);return}
+  const pb=e.target.closest("[data-plan]");if(pb){plan=pb.dataset.plan;$$("[data-plan]").forEach(x=>x.setAttribute("aria-pressed",x===pb));$("#pwPrice").textContent=plan==="year"?"$19.99 a year":"$2.99 a month";return}
+  if(e.target.closest("#pwGo")){$("#paywall").hidden=true;setPro(true);toast("Welcome to Pro. Everything is unlocked.");return}
+  if(e.target.closest("[data-demo-free]")){setPro(false);toast("Back on the free version");return}
+  const dm=e.target.closest("[data-demo]");if(dm){setPro(dm.dataset.demo==="pro");return}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$$(".overlay").forEach(o=>o.hidden=true)});
+function bindCommon(root){
+  root.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openMatch(+b.dataset.open));
+  root.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{closeMatch();go(b.dataset.go,true)});
+  root.querySelectorAll("[data-toast]").forEach(b=>b.onclick=()=>toast(b.dataset.toast));
+}
+const tabs=$$("nav [role=tab]");
+function go(name,jump){
+  tabs.forEach(t=>t.setAttribute("aria-selected",t.dataset.tab===name));
+  $$(".panel").forEach(p=>p.classList.toggle("on",p.id==="p-"+name));
+  $("#view").scrollTop=0;renderAll();
+  if(name==="record"&&jump)setTimeout(()=>$("#proCard").scrollIntoView({behavior:"smooth",block:"start"}),60);
+}
+tabs.forEach(t=>t.onclick=()=>{closeMatch();go(t.dataset.tab)});
+$("#backBtn").onclick=closeMatch;
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMatch()});
+function renderAll(){renderChips();renderMatchday();renderPred();renderLeague();renderFantasy();bindCommon($("#p-record"));bindCommon($("#p-leagues"))}
+document.getElementById("recShirt").innerHTML=shirtSVG("#F2C230","#10241A","55",104,"MODEL","Model shirt: 55 percent correct");
+document.getElementById("pwShirt").innerHTML=shirtSVG("#F2C230","#10241A","PRO",76);
+renderAll();
+/* notes toggle on phones */
+(function(){const b=document.getElementById("notesBtn"),n=document.getElementById("designNotes");
+  b.addEventListener("click",()=>{const o=!n.classList.contains("open");n.classList.toggle("open",o);b.setAttribute("aria-expanded",o);b.querySelector("span").textContent=o?"Back to app":"Design notes";if(o)n.scrollTop=0})})();
+/* shrink the phone mockup to fit shorter desktop windows */
+function fitPhone(){const ph=document.querySelector(".phone");if(innerWidth<=600){ph.style.zoom="";return}const s=Math.min(1,(innerHeight-40)/836);ph.style.zoom=s<1?String(Math.max(.6,s)):"";ph.style.top=s<1?"20px":""}
+addEventListener("resize",fitPhone);fitPhone();
+</script>
+</body>
+</html>
